@@ -1,9 +1,6 @@
 CRUD-Microservices 
 ==========================================
 
-[![Build Status](https://travis-ci.org/rochapaulo/crud-microservices.svg?branch=master)](https://travis-ci.org/rochapaulo/crud-microservices)
-
-
 Este é um projeto para capacitação, onde aborda um CRUD completo usando a arquitetura de micro serviços. Utiliza as tecnologias:
 
 * Maven
