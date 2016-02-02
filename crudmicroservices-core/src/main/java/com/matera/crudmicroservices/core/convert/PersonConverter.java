@@ -9,6 +9,10 @@ import com.matera.crudmicroservices.core.domain.Person;
  *
  */
 public class PersonConverter {
+    
+    public PersonConverter() {
+        // Avoid instantiation
+    }
 
     /**
      * Converts a {@link com.matera.crudmicroservices.core.entities.Person}
@@ -17,7 +21,7 @@ public class PersonConverter {
      * @param entity the entity object
      * @return domain object
      */
-    public static Person convertEntityToDomain(com.matera.crudmicroservices.core.entities.Person entity) {
+    public static Person toDomain(com.matera.crudmicroservices.core.entities.Person entity) {
 
         if (entity == null) {
             return null;
@@ -34,7 +38,7 @@ public class PersonConverter {
      * @param domain the domain object
      * @return entity object
      */
-    public static com.matera.crudmicroservices.core.entities.Person convertDomainToEntity(Person domain) {
+    public static com.matera.crudmicroservices.core.entities.Person toEntity(Person domain) {
 
         if (domain == null) {
             return null;

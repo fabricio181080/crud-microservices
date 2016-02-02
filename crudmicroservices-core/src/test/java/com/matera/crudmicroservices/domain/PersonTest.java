@@ -3,7 +3,9 @@ package com.matera.crudmicroservices.domain;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.matera.crudmicroservices.core.domain.Person;
 
@@ -15,23 +17,29 @@ import com.matera.crudmicroservices.core.domain.Person;
  */
 public class PersonTest {
 
-    private static final long ID = 0L;
+    private static final Long ID = 0L;
     private static final String PHONE = "0000000000";
     private static final String JOE = "Joe Doe";
+    
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
 
     @Test
     public void testBuildNewObject() {
 
         Person person = Person.builder().withId(ID).withName(JOE).withPhoneNumber(PHONE).build();
 
-        assertEquals(ID, person.getId().longValue());
+        assertEquals(ID, person.getId());
         assertEquals(JOE, person.getName());
         assertEquals(PHONE, person.getPhoneNumber());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testBuildNewObjectWithError() {
 
+        exception.expect(IllegalArgumentException.class);
+        exception.expectMessage("Name is mandatory");
+        
         Person.builder().withId(ID).build();
     }
 

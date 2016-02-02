@@ -16,7 +16,7 @@ import com.matera.crudmicroservices.core.domain.Person;
  */
 public class PersonConverterTest {
 
-    private static final long ID = 0L;
+    private static final Long ID = 0L;
     private static final String PHONE = "0000000000";
     private static final String JOE = "Joe Doe";
 
@@ -24,10 +24,9 @@ public class PersonConverterTest {
     public void testConvertEntityToDomain() {
 
         final Person domain = Person.builder().withId(ID).withName(JOE).withPhoneNumber(PHONE).build();
-        final com.matera.crudmicroservices.core.entities.Person entity = PersonConverter.convertDomainToEntity(domain);
+        final com.matera.crudmicroservices.core.entities.Person entity = PersonConverter.toEntity(domain);
 
-        assertEquals("Converted domain id is not equals at entity object", domain.getId().longValue(),
-            entity.getId().longValue());
+        assertEquals("Converted domain id is not equals at entity object", domain.getId(), entity.getId());
         assertEquals("Converted domain firstName is not equals at entity object", domain.getName(), entity.getName());
         assertEquals("Converted domain lastName is not equals at entity object", domain.getPhoneNumber(),
             entity.getPhoneNumber());
@@ -36,7 +35,7 @@ public class PersonConverterTest {
     @Test
     public void testConvertEntityToDomainWithNullObject() {
 
-        final com.matera.crudmicroservices.core.entities.Person entity = PersonConverter.convertDomainToEntity(null);
+        final com.matera.crudmicroservices.core.entities.Person entity = PersonConverter.toEntity(null);
 
         assertNull("Converted object is not null when domain argument is", entity);
     }
@@ -45,7 +44,7 @@ public class PersonConverterTest {
     public void testConvertEntityToDomainWithNullId() {
 
         final Person domain = Person.builder().withName(JOE).withPhoneNumber(PHONE).build();
-        final com.matera.crudmicroservices.core.entities.Person entity = PersonConverter.convertDomainToEntity(domain);
+        final com.matera.crudmicroservices.core.entities.Person entity = PersonConverter.toEntity(domain);
 
         assertNull("Converted domain id is not equals at entity object", entity.getId());
     }
@@ -54,10 +53,9 @@ public class PersonConverterTest {
     public void testConvertDomainToEntity() {
 
         final com.matera.crudmicroservices.core.entities.Person entity = createEntity(ID, JOE, PHONE);
-        final Person domain = PersonConverter.convertEntityToDomain(entity);
+        final Person domain = PersonConverter.toDomain(entity);
 
-        assertEquals("Converted entity id is not equals at domain object", entity.getId().longValue(),
-            domain.getId().longValue());
+        assertEquals("Converted entity id is not equals at domain object", entity.getId(), domain.getId());
         assertEquals("Converted entity firstName is not equals at domain object", entity.getName(), domain.getName());
         assertEquals("Converted entity lastName is not equals at domain object", entity.getPhoneNumber(),
             domain.getPhoneNumber());
@@ -66,7 +64,7 @@ public class PersonConverterTest {
     @Test
     public void testConvertDomainToEntityWithNullObject() {
 
-        final Person domain = PersonConverter.convertEntityToDomain(null);
+        final Person domain = PersonConverter.toDomain(null);
 
         assertNull("Converted object is not null when entity argument is", domain);
     }
@@ -75,7 +73,7 @@ public class PersonConverterTest {
     public void testConvertDomainToEntityWithNullId() {
 
         final com.matera.crudmicroservices.core.entities.Person entity = createEntity(null, JOE, PHONE);
-        final Person domain = PersonConverter.convertEntityToDomain(entity);
+        final Person domain = PersonConverter.toDomain(entity);
 
         assertNull("Converted entity id is not equals at domain object", domain.getId());
     }
