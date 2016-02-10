@@ -1,4 +1,4 @@
-CRUD-Microservices 
+CRUD-Microservices
 ==========================================
 
 TravisCI: [![Build Status](https://travis-ci.org/materasystems/crud-microservices.svg?branch=master)](https://travis-ci.org/materasystems/crud-microservices)
@@ -23,3 +23,8 @@ Este é um projeto para capacitação, onde aborda um CRUD completo usando a arq
 * Guava
 * JUnit
 * Groovy / Spock
+* AngularJS
+* Bootstrap
+* Less
+* Bower
+* NPM
