@@ -1,10 +1,9 @@
-/* global toastr:false */
+/* global */
 (function() {
   'use strict';
 
   angular
     .module('crudmicroservicesUi')
-    .constant('api', '/api')
-    .constant('toastr', toastr);
+    .constant('api', '/api');
 
 })();
