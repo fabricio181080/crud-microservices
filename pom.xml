@@ -10,7 +10,20 @@
       <name>Paulo Almeida</name>
       <organization>MATERA Systems</organization>
     </developer>
+    <developer>
+      <name>Geiser Menoia</name>
+      <organization>MATERA Systems</organization>
+    </developer>
   </developers>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <modules>
   	<module>crudmicroservices-client</module>
