@@ -7,16 +7,84 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>crudmicroservices-middle</artifactId>
+	<packaging>war</packaging>
 
 	<properties>
 		<cassandra.version>2.0.3</cassandra.version>
+		<tomcat.port>9080</tomcat.port>
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.orbit</groupId>
+			<artifactId>javax.servlet</artifactId>
+			<version>2.5.0.v201103041518</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>com.datastax.cassandra</groupId>
 			<artifactId>cassandra-driver-core</artifactId>
 			<version>${cassandra.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.netflix.karyon</groupId>
+			<artifactId>karyon-core</artifactId>
+			<version>1.0.20</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>eureka-client</artifactId>
+					<groupId>com.netflix.eureka</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.netflix.karyon</groupId>
+			<artifactId>karyon-extensions</artifactId>
+			<version>1.0.20</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.netflix.karyon</groupId>
+			<artifactId>karyon-admin</artifactId>
+			<version>1.0.20</version>
+			<scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>eureka-client</artifactId>
+					<groupId>com.netflix.eureka</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.netflix.governator</groupId>
+			<artifactId>governator</artifactId>
+			<version>1.2.19</version>
+		</dependency>
+		<dependency>
+			<groupId>com.netflix.archaius</groupId>
+			<artifactId>archaius-core</artifactId>
+			<version>0.6.5</version>
 		</dependency>
 	</dependencies>
 
@@ -47,6 +115,40 @@
 						</executions>
 					</plugin>
 					<plugin>
+						<groupId>org.apache.tomcat.maven</groupId>
+						<artifactId>tomcat7-maven-plugin</artifactId>
+						<version>2.2</version>
+						<executions>
+							<execution>
+								<id>tomcat-run</id>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<phase>pre-integration-test</phase>
+								<configuration>
+									<fork>true</fork>
+									<path>/crudmicroservices</path>
+									<port>${tomcat.port}</port>
+									<update>true</update>
+									<systemProperties>
+										<archaius.deployment.environment>local</archaius.deployment.environment>
+										<application.home>${basedir}${file.separator}src${file.separator}test${file.separator}resources${file.separator}</application.home>
+										<application.version>${project.version}</application.version>
+										<http.port>${tomcat.port}</http.port>
+									</systemProperties>
+									<useTestClasspath>true</useTestClasspath>
+								</configuration>
+							</execution>
+							<execution>
+								<id>tomcat-shutdown</id>
+								<goals>
+									<goal>shutdown</goal>
+								</goals>
+								<phase>post-integration-test</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-failsafe-plugin</artifactId>
 						<version>2.15</version>
@@ -65,6 +167,7 @@
 	</profiles>
 
 	<build>
+		<finalName>crudmicroservices</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -86,5 +189,6 @@
 			</resource>
 		</resources>
 	</build>
+
 
 </project>
