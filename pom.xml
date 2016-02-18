@@ -4,6 +4,14 @@
   <artifactId>crudmicroservices</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+
+  <developers>
+    <developer>
+      <name>Paulo Almeida</name>
+      <organization>MATERA Systems</organization>
+    </developer>
+  </developers>
+
   <modules>
   	<module>crudmicroservices-client</module>
   	<module>crudmicroservices-middle</module>
