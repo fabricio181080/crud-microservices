@@ -3,10 +3,10 @@ language: java
 services:
  - cassandra
 
-before_install: mvn -Denvironment=travis install -X
-
-before_script: |-
+before_install: |-
  - cqlsh -e "SOURCE crudmicroservices-middle/src/cassandra/cql/load.cql"
+
+install: mvn -Denvironment=travis install -X
 
 script: mvn test -X
 jdk:
