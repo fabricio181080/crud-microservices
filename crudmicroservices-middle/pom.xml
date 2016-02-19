@@ -94,9 +94,6 @@
 	<profiles>
 		<profile>
 			<id>integration-test</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
 			<build>
 				<plugins>
 					<plugin>
@@ -110,9 +107,7 @@
 						<executions>
 							<execution>
 								<goals>
-									<goal>start</goal>
 									<goal>cql-exec</goal>
-									<goal>stop</goal>
 								</goals>
 							</execution>
 						</executions>
