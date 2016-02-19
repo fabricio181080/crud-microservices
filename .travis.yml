@@ -3,10 +3,9 @@ language: java
 services:
  - cassandra
 
-before_install: mvn install -DskipTests=true
+before_install: mvn -Denvironment=travis install -X
 
 script: mvn test -X
-
 jdk:
  - oraclejdk8
 

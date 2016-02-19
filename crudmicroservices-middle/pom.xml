@@ -10,10 +10,7 @@
 	<packaging>war</packaging>
 
 	<properties>
-	
-		
-	
-		<cassandra.version>2.0.3</cassandra.version>
+		<cassandra.version>3.0.0</cassandra.version>
 		<tomcat.port>9080</tomcat.port>
 	</properties>
 
@@ -94,14 +91,96 @@
 	<profiles>
 		<profile>
 			<id>integration-test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>cassandra-maven-plugin</artifactId>
-						<version>2.0.0-1</version>
+						<version>2.1.7-1</version>
 						<configuration>
-							<cqlVersion>3.0.0</cqlVersion>
+							<cqlVersion>3.2.0</cqlVersion>
+							<startNativeTransport>true</startNativeTransport>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>start</goal>
+									<goal>cql-exec</goal>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.tomcat.maven</groupId>
+						<artifactId>tomcat7-maven-plugin</artifactId>
+						<version>2.2</version>
+						<executions>
+							<execution>
+								<id>tomcat-run</id>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<phase>pre-integration-test</phase>
+								<configuration>
+									<fork>true</fork>
+									<path>/crudmicroservices</path>
+									<port>${tomcat.port}</port>
+									<update>true</update>
+									<systemProperties>
+										<archaius.deployment.environment>local</archaius.deployment.environment>
+										<application.home>${basedir}${file.separator}src${file.separator}test${file.separator}resources${file.separator}</application.home>
+										<application.version>${project.version}</application.version>
+										<http.port>${tomcat.port}</http.port>
+									</systemProperties>
+									<useTestClasspath>true</useTestClasspath>
+								</configuration>
+							</execution>
+							<execution>
+								<id>tomcat-shutdown</id>
+								<goals>
+									<goal>shutdown</goal>
+								</goals>
+								<phase>post-integration-test</phase>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>2.15</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
+			<id>travis-integration-test</id>
+			<activation>
+				<property>
+					<name>environment</name>
+					<value>travis</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>cassandra-maven-plugin</artifactId>
+						<version>2.1.7-1</version>
+						<configuration>
+							<cqlVersion>3.2.0</cqlVersion>
 							<startNativeTransport>true</startNativeTransport>
 						</configuration>
 						<executions>
