@@ -1,8 +1,11 @@
 language: java
 
+services:
+ - cassandra
+
 before_install: mvn install -DskipTests=true
 
-script: mvn test
+script: mvn test -X
 
 jdk:
  - oraclejdk8
