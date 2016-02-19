@@ -5,6 +5,9 @@ services:
 
 before_install: mvn -Denvironment=travis install -X
 
+before_script:
+ - cqlsh -f crudmicroservices-middle/src/cassandra/cql/load.cql
+
 script: mvn test -X
 jdk:
  - oraclejdk8
