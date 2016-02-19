@@ -10,7 +10,8 @@
       properties = properties || {id: '@id'};
 
       methods = angular.extend({
-        update: {method: 'PUT'}
+        update: {method: 'PUT'},
+        query: {isArray : false}
       }, methods);
 
       return $resource(url, properties, methods);
