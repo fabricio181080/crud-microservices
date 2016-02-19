@@ -4,7 +4,7 @@ services:
  - cassandra
 
 before_install: |-
- - cqlsh -e "SOURCE crudmicroservices-middle/src/cassandra/cql/load.cql"
+ cqlsh -e "SOURCE crudmicroservices-middle/src/cassandra/cql/load.cql"
 
 install: mvn -Denvironment=travis install -X
 
