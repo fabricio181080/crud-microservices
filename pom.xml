@@ -14,8 +14,12 @@
       <name>Geiser Menoia</name>
       <organization>MATERA Systems</organization>
     </developer>
+    <developer>
+      <id>falci</id>
+      <name>Fernando Falci</name>
+      <organization>MATERA Systems</organization>
+    </developer>
   </developers>
-
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
