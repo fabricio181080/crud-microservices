@@ -12,7 +12,6 @@ import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
-import com.datastax.driver.core.querybuilder.Update;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.matera.crudmicroservices.core.domain.Person;
@@ -30,8 +29,16 @@ public class PersonStoreImpl implements PersonStore {
 	private static final DynamicStringProperty KEYSPACE = 
 			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservices.cassandra.keyspace", "crudmicroservices");
 	
-	private static final DynamicStringProperty COLUMN_FAMILY =
+	private static final DynamicStringProperty PERSON_COLUMN_FAMILY =
 			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservices.cassandra.cf.person", "person");
+	
+	private static final DynamicStringProperty PERSON_BY_NAME_COLUMN_FAMILY =
+			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservices.cassandra.cf.personbyname", "person_by_name");
+	
+
+	private static final String ID = "id";
+	private static final String NAME = "name";
+	private static final String PHONE_NUMBER = "phone_number";
 	
 	@Inject
 	private final Provider<Session> session;
@@ -43,57 +50,66 @@ public class PersonStoreImpl implements PersonStore {
 	@Override
 	public Observable<Person> findAll() {
 
-		final Select query = QueryBuilder.select().from(KEYSPACE.get(), COLUMN_FAMILY.get());
+		final Select query = QueryBuilder.select().from(KEYSPACE.get(), PERSON_COLUMN_FAMILY.get());
 		
-		return new SearchPerson(query, session.get()).observe();
+		return new SearchPerson(query, session.get()).observe().flatMap((persons) -> Observable.from(persons));
 	}
 
 	@Override
 	public Observable<Person> findById(long id) {
 		
-		final Select query = QueryBuilder.select().from(KEYSPACE.get(), COLUMN_FAMILY.get());
-		query.where(eq("id", id));
+		final Select query = QueryBuilder.select().from(KEYSPACE.get(), PERSON_COLUMN_FAMILY.get());
+		query.where(eq(ID, id));
 		
-		return new SearchPerson(query, session.get()).observe();
+		return new SearchPerson(query, session.get()).observe().flatMap((persons) -> Observable.from(persons));
 	}
 
 	@Override
 	public Observable<Person> findByName(String name) {
 		
-		final Select query = QueryBuilder.select().from(KEYSPACE.get(), COLUMN_FAMILY.get());
-		query.where(eq("name", name));
+		final Select query = QueryBuilder.select().from(KEYSPACE.get(), PERSON_BY_NAME_COLUMN_FAMILY.get());
+		query.where(eq(NAME, name));
+		query.allowFiltering();
 		
-		return new SearchPerson(query, session.get()).observe();
+		return new SearchPerson(query, session.get()).observe().flatMap((persons) -> Observable.from(persons));
 	}
 
 	@Override
 	public void save(Person person) {
 		
-		final Insert insert = 
-				QueryBuilder.insertInto(KEYSPACE.get(), COLUMN_FAMILY.get())
-					.value("id", person.getId())
-					.value("name", person.getName())
-					.value("phone_number", person.getPhoneNumber());
+		final Insert insertPerson = 
+				QueryBuilder.insertInto(KEYSPACE.get(), PERSON_COLUMN_FAMILY.get())
+					.value(ID, person.getId())
+					.value(NAME, person.getName())
+					.value(PHONE_NUMBER, person.getPhoneNumber());
 		
-		session.get().execute(insert);
+		final Insert insertPersonByName = 
+				QueryBuilder.insertInto(KEYSPACE.get(), PERSON_BY_NAME_COLUMN_FAMILY.get())
+					.value(ID, person.getId())
+					.value(NAME, person.getName())
+					.value(PHONE_NUMBER, person.getPhoneNumber());
+		
+		session.get().execute(insertPerson);
+		session.get().execute(insertPersonByName);
 	}
 
 	@Override
 	public void update(Person person) {
-		
-		final Update update = QueryBuilder.update(KEYSPACE.get(), COLUMN_FAMILY.get());
-		update.where(eq("id", person.getId()));
-
-		session.get().execute(update);
+		delete(person);
+		save(person);
 	}
 
 	@Override
 	public void delete(Person person) {
 		
-		final Delete delete = QueryBuilder.delete().from(KEYSPACE.get(), COLUMN_FAMILY.get());
-		delete.where(eq("id", person.getId())).and(eq("name", person.getName()));
+		final Delete delete = QueryBuilder.delete().from(KEYSPACE.get(), PERSON_COLUMN_FAMILY.get());
+		delete.where(eq(ID, person.getId()));
+		
+		final Delete deleteByName = QueryBuilder.delete().from(KEYSPACE.get(), PERSON_BY_NAME_COLUMN_FAMILY.get());
+		deleteByName.where(eq(ID, person.getId())).and(eq(NAME, person.getName()));
 		
 		session.get().execute(delete);
+		session.get().execute(deleteByName);
 	}
 
 }

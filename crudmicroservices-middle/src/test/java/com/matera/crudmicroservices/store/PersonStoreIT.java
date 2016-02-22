@@ -1,17 +1,34 @@
 package com.matera.crudmicroservices.store;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Session;
 import com.google.inject.util.Providers;
 import com.matera.crudmicroservices.core.domain.Person;
 import com.matera.crudmicroservices.store.impl.PersonStoreImpl;
 
 public class PersonStoreIT {
 
+	private final Session session = Cluster.builder().addContactPoint("127.0.0.1").build().connect("crudmicroservices");
+	
 	private final PersonStore store = 
-			new PersonStoreImpl(Providers.of(Cluster.builder().addContactPoint("127.0.0.1").build().connect("crudmicroservices")));
+			new PersonStoreImpl(Providers.of(session));
+	
+	@BeforeClass
+	public static void setup() {
+		System.setProperty("crudmicroservices.cassandra.keyspace", "crudmicroservices");
+		System.setProperty("crudmicroservices.cassandra.cf.person", "person");
+		System.setProperty("crudmicroservices.cassandra.cf.personbyname", "person_by_name");
+	}
+	
+	@After
+	public void cleanup() {
+		session.execute("TRUNCATE crudmicroservices.person;");
+	}
 	
 	@Test
 	public void insert() {
@@ -73,10 +90,42 @@ public class PersonStoreIT {
 	@Test
 	public void update() {
 		
+		Assert.assertTrue(store.findAll().isEmpty().toBlocking().single());
+		
+		store.save(
+				Person.builder()
+				.withId(1L)
+				.withName("Kevin Vriezen")
+				.withPhoneNumber("09324670644")
+				.build()
+		);
+		
+		store.save(
+				Person.builder()
+				.withId(2L)
+				.withName("Martin Schweitzer")
+				.withPhoneNumber("09324670644")
+				.build()
+		);
+		
+		Assert.assertEquals(Integer.valueOf(2), store.findAll().count().toBlocking().single());
+		
+		store.update(Person.builder()
+				.withId(2L)
+				.withName("Meint Antonius")
+				.withPhoneNumber("09324670644")
+				.build());
+		
+		Assert.assertEquals(Integer.valueOf(2), store.findAll().count().toBlocking().single());
+		
+		Person queried = store.findById(2).toBlocking().single();
+		Assert.assertEquals(Long.valueOf(2), queried.getId());
+		Assert.assertEquals("Meint Antonius", queried.getName());
+		Assert.assertEquals("09324670644", queried.getPhoneNumber());
 	}
 	
 	@Test
-	public void queryByID() {
+	public void findByID() {
 		
 		store.save(
 				Person.builder()
@@ -95,13 +144,13 @@ public class PersonStoreIT {
 		);
 
 		Person queried = store.findById(2L).toBlocking().single();
-		Assert.assertEquals(Long.valueOf(1), queried.getId());
+		Assert.assertEquals(Long.valueOf(2), queried.getId());
 		Assert.assertEquals("Martin Schweitzer", queried.getName());
 		Assert.assertEquals("09324670644", queried.getPhoneNumber());
 	}
 	
 	@Test
-	public void queryByName() {
+	public void findByName() {
 		
 		store.save(
 				Person.builder()
