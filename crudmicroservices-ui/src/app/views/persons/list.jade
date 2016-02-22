@@ -5,21 +5,19 @@ a.btn.btn-success(ui-sref=".add")
   |  Add item
 br
 
-table.table.table-striped(ng-if="vm.items.length")
-  colgroup
-    col(width="10")
-    col(width="100%")
-    col.tools    
+table.table.table-striped(ng-if="vm.items.length")   
   thead
     tr
       th ID
       th Name
-      th.tools.text-center Options
+      th Phone Number
+      th.text-center Options
   tbody
     tr(ng-repeat="item in vm.items")
       td {{item.id}}
       td {{item.name}}
-      td.tools 
+      td {{item.phoneNumber}}
+      td.tools
         a.btn.btn-primary(ui-sref=".edit({id: item.id})")
           i.fa.fa-pencil
         a.btn.btn-danger(confirm-remove="item")
