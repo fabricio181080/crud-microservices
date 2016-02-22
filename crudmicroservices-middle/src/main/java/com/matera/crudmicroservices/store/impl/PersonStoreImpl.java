@@ -24,6 +24,7 @@ import rx.Observable;
 
 public class PersonStoreImpl implements PersonStore {
 
+	
 	static final Logger logger = LoggerFactory.getLogger(PersonStoreImpl.class);
 	
 	
@@ -48,6 +49,9 @@ public class PersonStoreImpl implements PersonStore {
 		this.session = session;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Observable<Person> findAll() {
 		
@@ -57,6 +61,9 @@ public class PersonStoreImpl implements PersonStore {
 		return new SearchPerson(query, session.get()).observe().flatMap((persons) -> Observable.from(persons));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Observable<Person> findById(long id) {
 		
@@ -67,6 +74,9 @@ public class PersonStoreImpl implements PersonStore {
 		return new SearchPerson(query, session.get()).observe().flatMap((persons) -> Observable.from(persons));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public Observable<Person> findByName(String name) {
 		
@@ -78,6 +88,9 @@ public class PersonStoreImpl implements PersonStore {
 		return new SearchPerson(query, session.get()).observe().flatMap((persons) -> Observable.from(persons));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void save(Person person) {
 		
@@ -100,6 +113,9 @@ public class PersonStoreImpl implements PersonStore {
 		session.get().execute(insertPersonByName);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void update(Person person) {
 		
@@ -108,6 +124,9 @@ public class PersonStoreImpl implements PersonStore {
 		save(person);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void delete(Person person) {
 		
