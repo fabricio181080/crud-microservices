@@ -17,6 +17,12 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>matera</groupId>
+			<artifactId>crudmicroservices-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
@@ -86,6 +92,17 @@
 			<artifactId>archaius-core</artifactId>
 			<version>0.6.5</version>
 		</dependency>
+		<dependency>
+			<groupId>com.netflix.hystrix</groupId>
+			<artifactId>hystrix-core</artifactId>
+			<version>1.4.23</version>
+		</dependency>
+		<dependency>
+			<groupId>io.reactivex</groupId>
+			<artifactId>rxjava</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<profiles>
@@ -164,7 +181,7 @@
 				</plugins>
 			</build>
 		</profile>
-		
+
 		<profile>
 			<id>travis-integration-test</id>
 			<activation>
