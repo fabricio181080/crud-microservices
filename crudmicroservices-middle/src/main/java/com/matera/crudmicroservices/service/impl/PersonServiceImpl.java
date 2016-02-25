@@ -63,7 +63,7 @@ public class PersonServiceImpl implements PersonService {
 		
 		checkArgument(StringUtils.isNotBlank(name), "name mustn't be null or empty");
 		
-		return cache.get(PersonCacheKey.byName(name))
+		return cache.get(byName(name))
 					.cast(Person.class)
 					.switchIfEmpty(
 							personStore.findByName(name)

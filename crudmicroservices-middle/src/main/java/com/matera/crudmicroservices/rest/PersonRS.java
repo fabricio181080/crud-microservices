@@ -18,19 +18,18 @@ import com.matera.crudmicroservices.service.PersonService;
 import rx.Observable;
 
 @Path("/person")
-public class PersonAPI {
+public class PersonRS {
 
 	private final PersonService service;
 	
 	@Inject
-	public PersonAPI(PersonService service) {
+	public PersonRS(PersonService service) {
 		this.service = service;
 	}
 	
 	@Path("/{id}")
 	@GET
 	@Produces({
-		MediaType.APPLICATION_XML,
 		MediaType.APPLICATION_JSON
 	})
 	public Response findById(@PathParam("id") long id) {
@@ -44,7 +43,6 @@ public class PersonAPI {
 	@Path("/all")
 	@GET
 	@Produces({
-		MediaType.APPLICATION_XML,
 		MediaType.APPLICATION_JSON
 	})
 	public Response all(@QueryParam("name") String name, @QueryParam("phoneNumber") String phoneNumber) {
