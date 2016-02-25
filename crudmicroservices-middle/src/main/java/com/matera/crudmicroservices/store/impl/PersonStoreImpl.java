@@ -42,9 +42,9 @@ public class PersonStoreImpl implements PersonStore {
 	private static final String NAME = "name";
 	private static final String PHONE_NUMBER = "phone_number";
 	
-	@Inject
 	private final Provider<Session> session;
 	
+	@Inject
 	public PersonStoreImpl(Provider<Session> session) {
 		this.session = session;
 	}
