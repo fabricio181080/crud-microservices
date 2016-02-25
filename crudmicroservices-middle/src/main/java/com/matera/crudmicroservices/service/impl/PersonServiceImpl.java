@@ -1,24 +1,36 @@
 package com.matera.crudmicroservices.service.impl;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.matera.crudmicroservices.service.impl.PersonCacheKey.byId;
+import static com.matera.crudmicroservices.service.impl.PersonCacheKey.byName;
+
+import java.io.Serializable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import com.matera.crudmicroservices.cache.Cache;
 import com.matera.crudmicroservices.core.convert.PersonConverter;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.matera.crudmicroservices.service.PersonService;
 import com.matera.crudmicroservices.store.PersonStore;
 
 import rx.Observable;
+import rx.functions.Action1;
 
 public class PersonServiceImpl implements PersonService {
 
+	static final Logger logger = LoggerFactory.getLogger(PersonServiceImpl.class);
+	
 	private final PersonStore personStore;
+	private final Cache cache;
 	
 	@Inject
-	public PersonServiceImpl(PersonStore personStore) {
+	public PersonServiceImpl(PersonStore personStore, Cache cache) {
 		this.personStore = personStore;
+		this.cache = cache;
 	}
 	
 	/**
@@ -26,6 +38,7 @@ public class PersonServiceImpl implements PersonService {
 	 */
 	@Override
 	public Observable<Person> findAll() {
+		
 		return personStore.findAll().map(PersonConverter::toEntity);
 	}
 
@@ -34,7 +47,14 @@ public class PersonServiceImpl implements PersonService {
 	 */
 	@Override
 	public Observable<Person> findById(long id) {
-		return personStore.findById(id).map(PersonConverter::toEntity);
+	
+		return cache.get(PersonCacheKey.byId(id))
+				.cast(Person.class)
+				.switchIfEmpty(
+						personStore.findById(id)
+							.doOnNext(cache(byId(id)))
+							.map(PersonConverter::toEntity)
+					);
 	}
 
 	/**
@@ -42,8 +62,21 @@ public class PersonServiceImpl implements PersonService {
 	 */
 	@Override
 	public Observable<Person> findByName(String name) {
+		
 		checkArgument(StringUtils.isNotBlank(name), "name mustn't be null or empty");
-		return personStore.findByName(name).map(PersonConverter::toEntity);
+
+		return cache.get(PersonCacheKey.byName(name))
+					.cast(Person.class)
+					.switchIfEmpty(
+							personStore.findByName(name)
+								.doOnNext(cache(byName(name)))
+								.map(PersonConverter::toEntity)
+						);
+		
+	}
+	
+	private Action1<Serializable> cache(String key) {
+		return (value) -> cache.set(key, value);
 	}
 	
 }
