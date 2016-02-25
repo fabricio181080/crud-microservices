@@ -4,8 +4,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.matera.crudmicroservices.service.impl.PersonCacheKey.byId;
 import static com.matera.crudmicroservices.service.impl.PersonCacheKey.byName;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,18 +62,20 @@ public class PersonServiceImpl implements PersonService {
 	public Observable<Person> findByName(String name) {
 		
 		checkArgument(StringUtils.isNotBlank(name), "name mustn't be null or empty");
-
+		
 		return cache.get(PersonCacheKey.byName(name))
 					.cast(Person.class)
 					.switchIfEmpty(
 							personStore.findByName(name)
+								.toList()
 								.doOnNext(cache(byName(name)))
+								.flatMap((persons) -> Observable.from(persons))
 								.map(PersonConverter::toEntity)
 						);
 		
 	}
 	
-	private Action1<Serializable> cache(String key) {
+	private Action1<Object> cache(String key) {
 		return (value) -> cache.set(key, value);
 	}
 	

@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>com.netflix.evcache</groupId>
 			<artifactId>evcache-client</artifactId>
-			<version>4.8.0</version>
+			<version>1.0.5</version>
 		</dependency>
 
 	</dependencies>

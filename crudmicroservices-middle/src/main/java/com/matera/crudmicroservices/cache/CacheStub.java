@@ -1,6 +1,5 @@
 package com.matera.crudmicroservices.cache;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -25,7 +24,7 @@ public class CacheStub implements Cache {
 	}
 
 	@Override
-	public void set(String key, Serializable value) {
+	public void set(String key, Object value) {
 		cache.put(key, value);
 	}
 

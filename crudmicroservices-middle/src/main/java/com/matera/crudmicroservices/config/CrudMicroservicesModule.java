@@ -45,7 +45,7 @@ public class CrudMicroservicesModule extends AbstractModule {
 	@Provides
 	public EVCache cache() {
 		final EVCache cache = 
-				(new EVCache.Builder()).setAppName(cacheAppName.get()).setCachePrefix(cachePrefix.get()).enableRetry().build();
+				(new EVCache.Builder()).setAppName(cacheAppName.get()).setCacheName(cachePrefix.get()).enableZoneFallback().build();
 		return cache;
 	}
 	
