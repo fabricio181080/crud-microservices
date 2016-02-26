@@ -18,7 +18,7 @@ public class CacheImpl implements Cache {
 
 	static final Logger logger = LoggerFactory.getLogger(CacheImpl.class);
 	
-	private DynamicIntProperty timeToLive = DynamicPropertyFactory.getInstance().getIntProperty("crudmicroservices.cache.ttl", 900);
+	private DynamicIntProperty timeToLive = DynamicPropertyFactory.getInstance().getIntProperty("crudmicroservicesmiddle.cache.ttl", 900);
 	
 	private final Provider<EVCache> delegate;
 

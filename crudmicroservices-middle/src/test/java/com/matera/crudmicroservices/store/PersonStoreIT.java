@@ -20,9 +20,9 @@ public class PersonStoreIT {
 	
 	@BeforeClass
 	public static void setup() {
-		System.setProperty("crudmicroservices.cassandra.keyspace", "crudmicroservices");
-		System.setProperty("crudmicroservices.cassandra.cf.person", "person");
-		System.setProperty("crudmicroservices.cassandra.cf.personbyname", "person_by_name");
+		System.setProperty("crudmicroservicesmiddle.cassandra.keyspace", "crudmicroservices");
+		System.setProperty("crudmicroservicesmiddle.cassandra.cf.person", "person");
+		System.setProperty("crudmicroservicesmiddle.cassandra.cf.personbyname", "person_by_name");
 	}
 	
 	@Before

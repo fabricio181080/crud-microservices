@@ -18,16 +18,16 @@ public class CrudMicroservicesModule extends AbstractModule {
 
 	private final DynamicStringProperty cassandraHost = 
 			DynamicPropertyFactory.getInstance()
-				.getStringProperty("crudmicroservices.cassandra.host", "");
+				.getStringProperty("crudmicroservicesmiddle.cassandra.host", "");
 	
 	private final DynamicStringProperty cassandraKeyspace = 
-			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservices.cassandra.keyspace", "");
+			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservicesmiddle.cassandra.keyspace", "");
 	
 	private final DynamicStringProperty cacheAppName = 
-			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservices.evcache.appname", "");
+			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservicesmiddle.evcache.appname", "");
 	
 	private final DynamicStringProperty cachePrefix =
-			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservices.evcache.prefix", "");
+			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservicesmiddle.evcache.prefix", "");
 	
 	@Override
 	protected void configure() {
