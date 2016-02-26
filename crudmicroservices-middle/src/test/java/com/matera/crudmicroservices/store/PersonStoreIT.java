@@ -1,7 +1,7 @@
 package com.matera.crudmicroservices.store;
 
-import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -25,9 +25,10 @@ public class PersonStoreIT {
 		System.setProperty("crudmicroservices.cassandra.cf.personbyname", "person_by_name");
 	}
 	
-	@After
+	@Before
 	public void cleanup() {
 		session.execute("TRUNCATE crudmicroservices.person;");
+		session.execute("TRUNCATE crudmicroservices.person_by_name;");
 	}
 	
 	@Test
