@@ -1,11 +1,15 @@
 package com.matera.crudmicroservices.edge.rest;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +18,9 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Lists;
+import com.matera.crudmicroservices.core.domain.Person;
 import com.matera.crudmicroservices.edge.rest.filter.PersonFilter;
-import com.matera.crudmicroservices.edge.service.PersonService;
+import com.matera.crudmicroservices.edge.service.PersonServiceImpl;
 
 import rx.Observable;
 
@@ -23,50 +28,51 @@ import rx.Observable;
 public class PersonRSTest {
 	
 	@Mock
-	private PersonService service;
+	private PersonServiceImpl service;
+	
 	private PersonRS personRS;
 
 	@Before
 	public void init(){
 		personRS = new PersonRS(service);
 	}
-
+	
 	/**
 	 * Test if {@link PersonRS#getPersonsList(PersonFilter)} will call its service
 	 * and 'open' the {@link Observable}.
 	 */
 	@Test
 	public void testGetPersonsList() {
-		Object fakePerson = new Object();
+		Person fakePerson = createPerson();
 		PersonFilter filter = new PersonFilter();
-		Observable<List<?>> observable = Observable.just(Lists.newArrayList(fakePerson));
+		Observable<List<Person>> observable = Observable.just(Lists.newArrayList(fakePerson));
 		
-		Mockito.when(service.getPersonsList(filter)).thenReturn(observable);
+		when(service.getPersonsList(filter)).thenReturn(observable);
 		
 		Response response = personRS.getPersonsList(filter);
-		Assert.assertNotNull(response.getEntity());
+		assertNotNull(response.getEntity());
 		
-		List<?> persons = (List<?>) response.getEntity();
-		Assert.assertEquals(1, persons.size());
-		Assert.assertEquals(fakePerson, persons.get(0));
+		List<Person> persons = (List<Person>) response.getEntity();
+		assertEquals(1, persons.size());
+		assertEquals(fakePerson, persons.get(0));
 		
-		Mockito.verify(service, Mockito.only()).getPersonsList(filter);
+		verify(service, Mockito.only()).getPersonsList(filter);
 	}
-	
+
 	/**
 	 * Test if {@link PersonRS#getPerson(Long)} will call its service
 	 * and 'open' the {@link Observable}.
 	 */
 	@Test
 	public void testGetPerson(){
-		Object fakePerson = new Object();
-		Observable<Object> observable = Observable.just(fakePerson);
+		Person fakePerson = createPerson();
+		Observable<Person> observable = Observable.just(fakePerson);
 		
-		Mockito.when(service.getPersons(1l)).thenReturn(observable);
+		when(service.getPersons(1l)).thenReturn(observable);
 		
 		Response response = personRS.getPerson(1l);
-		Assert.assertNotNull(response.getEntity());		
-		Assert.assertEquals(fakePerson, response.getEntity());		
+		assertNotNull(response.getEntity());		
+		assertEquals(fakePerson, response.getEntity());		
 	}
 
 	
@@ -76,13 +82,25 @@ public class PersonRSTest {
 	 */
 	@Test
 	public void testGetPersonNotFound(){
-		Observable<Object> observable = Observable.empty();
+		Observable<Person> observable = Observable.empty();
 		
-		Mockito.when(service.getPersons(1l)).thenReturn(observable);
+		when(service.getPersons(1l)).thenReturn(observable);
 		
 		Response response = personRS.getPerson(1l);
-		Assert.assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());	
+		assertEquals(Status.NOT_FOUND.getStatusCode(), response.getStatus());	
 		
 	}
 
+	/**
+	 * Util method to create a Person with default values
+	 * @return
+	 */
+	private Person createPerson() {
+		Person fakePerson = new Person.Builder()
+								.withId(1L)
+								.withName("Jose")
+								.withPhoneNumber("99999-4444")
+							.build();
+		return fakePerson;
+	}
 }

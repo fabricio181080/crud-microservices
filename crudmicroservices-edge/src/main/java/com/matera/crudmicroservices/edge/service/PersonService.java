@@ -2,28 +2,21 @@ package com.matera.crudmicroservices.edge.service;
 
 import java.util.List;
 
-import org.apache.commons.lang.NotImplementedException;
-
-import com.google.inject.Inject;
+import com.matera.crudmicroservices.core.domain.Person;
 import com.matera.crudmicroservices.edge.rest.filter.PersonFilter;
 
 import rx.Observable;
 
 /**
- * Service to handle client responses
- * 
- * @author falci
- *
+ * @author Igor K. Shiohara
  */
-public class PersonService {
-	
+public interface PersonService {
+
 	/**
-	 * Constructor with all arguments
-	 * 
+	 * Create a Person
+	 * @return
 	 */
-	@Inject
-	public PersonService() {
-	}
+	Observable<Person> create(Person person);
 
 	/**
 	 * Returns a list of person. It can be filtered by name
@@ -31,9 +24,7 @@ public class PersonService {
 	 * @param filter
 	 * @return
 	 */
-	public Observable<List<?>> getPersonsList(PersonFilter filter) {
-		throw new NotImplementedException("Not yet");
-	}
+	Observable<List<Person>> getPersonsList(PersonFilter filter);
 
 	/**
 	 * Returns a single person, filtering by id
@@ -41,8 +32,6 @@ public class PersonService {
 	 * @param id
 	 * @return
 	 */
-	public Observable<Object> getPersons(Long id) {
-		throw new NotImplementedException("Not yet");
-	}
+	Observable<Person> getPersons(Long id);
 
 }
