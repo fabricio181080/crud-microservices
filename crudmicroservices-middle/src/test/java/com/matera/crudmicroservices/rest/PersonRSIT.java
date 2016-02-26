@@ -1,7 +1,5 @@
 package com.matera.crudmicroservices.rest;
 
-import java.io.ByteArrayOutputStream;
-import java.lang.reflect.Type;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -10,20 +8,24 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
-import com.google.common.io.ByteStreams;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.google.inject.util.Providers;
 import com.matera.crudmicroservices.core.domain.Person;
 import com.matera.crudmicroservices.store.PersonStore;
 import com.matera.crudmicroservices.store.impl.PersonStoreImpl;
 
 public class PersonRSIT {
+
+	private ObjectMapper mapper = new ObjectMapper();
+	{
+		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.PASCAL_CASE_TO_CAMEL_CASE);
+	}
 
 	@BeforeClass
 	public static void before() {
@@ -57,44 +59,53 @@ public class PersonRSIT {
 		final String uri = "http://localhost:9080/crudmicroservices/person/all";
 		HttpResponse response = doGET(uri);
 
-		final Type type = new TypeToken<List<com.matera.crudmicroservices.core.entities.Person>>() {}.getType();
-		List<com.matera.crudmicroservices.core.entities.Person> persons = getEntity(response.getEntity(), type);
+		List<com.matera.crudmicroservices.core.entities.Person> persons = 
+				getEntity(
+						response.getEntity(),
+						new TypeReference<List<com.matera.crudmicroservices.core.entities.Person>>() { }
+					);
 		Assert.assertEquals(5, persons.size());
 	}
 	
-	@Ignore
 	@Test
 	public void filterByName() throws Exception {
 		
 		final String uri = "http://localhost:9080/crudmicroservices/person/all?name=Andre%20Grant";
 		HttpResponse response = doGET(uri);
 		
-		final Type type = new TypeToken<List<com.matera.crudmicroservices.core.entities.Person>>() {}.getType();
-		List<com.matera.crudmicroservices.core.entities.Person> persons = getEntity(response.getEntity(), type);
+		List<com.matera.crudmicroservices.core.entities.Person> persons = 
+				getEntity(
+						response.getEntity(),
+						new TypeReference<List<com.matera.crudmicroservices.core.entities.Person>>() { }
+					);
 		Assert.assertEquals(2, persons.size());
 	}
 	
-	@Ignore
 	@Test
 	public void filterByPhoneNumber() throws Exception {
 		
 		final String uri = "http://localhost:9080/crudmicroservices/person/all?phoneNumber=202-555-0155";
 		HttpResponse response = doGET(uri);
 		
-		final Type type = new TypeToken<List<com.matera.crudmicroservices.core.entities.Person>>() {}.getType();
-		List<com.matera.crudmicroservices.core.entities.Person> persons = getEntity(response.getEntity(), type);
+		List<com.matera.crudmicroservices.core.entities.Person> persons = 
+				getEntity(
+						response.getEntity(),
+						new TypeReference<List<com.matera.crudmicroservices.core.entities.Person>>() { }
+					);
 		Assert.assertEquals(2, persons.size());
 	}
 	
-	@Ignore
 	@Test
 	public void filterByNameAndPhoneNumber() throws Exception {
 		
-		final String uri = "http://localhost:9080/crudmicroservices/person/all?name=Andre%20Grant?phoneNumber=202-555-0155";
+		final String uri = "http://localhost:9080/crudmicroservices/person/all?name=Andre%20Grant&phoneNumber=202-555-0155";
 		HttpResponse response = doGET(uri);
-		
-		final Type type = new TypeToken<List<com.matera.crudmicroservices.core.entities.Person>>() {}.getType();
-		List<com.matera.crudmicroservices.core.entities.Person> persons = getEntity(response.getEntity(), type);
+
+		List<com.matera.crudmicroservices.core.entities.Person> persons = 
+				getEntity(
+						response.getEntity(),
+						new TypeReference<List<com.matera.crudmicroservices.core.entities.Person>>() { }
+					);
 		Assert.assertEquals(1, persons.size());
 		
 		Assert.assertEquals(Long.valueOf(5), persons.get(0).getId());
@@ -109,22 +120,11 @@ public class PersonRSIT {
 	}
 	
 	private <T> T getEntity(HttpEntity entity, Class<T> klass) throws Exception {
-		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteStreams.copy(entity.getContent(), out);
-		
-        String json = out.toString();
-        System.out.println("-------------> " + json);
-        
-		return new Gson().fromJson(json, klass);
+		return mapper.readValue(entity.getContent(), klass);
 	}
 	
-	private <T> T getEntity(HttpEntity entity, Type type) throws Exception {
-		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ByteStreams.copy(entity.getContent(), out);
-		
-		return new Gson().fromJson(out.toString(), type);
+	private <T> T getEntity(HttpEntity entity, TypeReference<T> type) throws Exception {
+		return mapper.readValue(entity.getContent(), type);
 	}
 	
 }

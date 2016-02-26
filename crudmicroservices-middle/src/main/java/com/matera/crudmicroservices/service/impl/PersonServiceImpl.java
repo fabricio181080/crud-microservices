@@ -50,8 +50,8 @@ public class PersonServiceImpl implements PersonService {
 				.cast(Person.class)
 				.switchIfEmpty(
 						personStore.findById(id)
-							.doOnNext(cache(byId(id)))
 							.map(PersonConverter::toEntity)
+							.doOnNext(cache(byId(id)))
 					);
 	}
 
@@ -67,10 +67,10 @@ public class PersonServiceImpl implements PersonService {
 					.cast(Person.class)
 					.switchIfEmpty(
 							personStore.findByName(name)
+								.map(PersonConverter::toEntity)
 								.toList()
 								.doOnNext(cache(byName(name)))
 								.flatMap((persons) -> Observable.from(persons))
-								.map(PersonConverter::toEntity)
 						);
 		
 	}

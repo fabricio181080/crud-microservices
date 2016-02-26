@@ -7,6 +7,7 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
@@ -101,7 +102,7 @@ public class PersonStoreImpl implements PersonStore {
 					.value(NAME, person.getName())
 					.value(PHONE_NUMBER, person.getPhoneNumber());
 		
-		session.get().execute(insertPerson);
+		session.get().execute(insertPerson.setConsistencyLevel(ConsistencyLevel.ONE));
 		
 		logger.info("Saving {} on CF = {}", person, PERSON_BY_NAME_COLUMN_FAMILY.get());
 		final Insert insertPersonByName = 
@@ -109,8 +110,8 @@ public class PersonStoreImpl implements PersonStore {
 					.value(ID, person.getId())
 					.value(NAME, person.getName())
 					.value(PHONE_NUMBER, person.getPhoneNumber());
-		
-		session.get().execute(insertPersonByName);
+	
+		session.get().execute(insertPersonByName.setConsistencyLevel(ConsistencyLevel.ONE));
 	}
 
 	/**
@@ -134,13 +135,13 @@ public class PersonStoreImpl implements PersonStore {
 		final Delete delete = QueryBuilder.delete().from(KEYSPACE.get(), PERSON_COLUMN_FAMILY.get());
 		delete.where(eq(ID, person.getId()));
 
-		session.get().execute(delete);
+		session.get().execute(delete.setConsistencyLevel(ConsistencyLevel.ONE));
 		
 		logger.info("Deleting {} from CF = {}", person, PERSON_BY_NAME_COLUMN_FAMILY.get());
 		final Delete deleteByName = QueryBuilder.delete().from(KEYSPACE.get(), PERSON_BY_NAME_COLUMN_FAMILY.get());
 		deleteByName.where(eq(ID, person.getId())).and(eq(NAME, person.getName()));
 		
-		session.get().execute(deleteByName);
+		session.get().execute(deleteByName.setConsistencyLevel(ConsistencyLevel.ONE));
 	}
 
 }

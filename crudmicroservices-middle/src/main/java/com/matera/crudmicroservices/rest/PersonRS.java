@@ -16,6 +16,7 @@ import com.matera.crudmicroservices.core.entities.Person;
 import com.matera.crudmicroservices.service.PersonService;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 @Path("/person")
 public class PersonRS {
@@ -46,23 +47,28 @@ public class PersonRS {
 		MediaType.APPLICATION_JSON
 	})
 	public Response all(@QueryParam("name") String name, @QueryParam("phoneNumber") String phoneNumber) {
-		final Observable<Person> observable;
 		
+		final Observable<Person> observable;
 		if (name != null) {
 			observable = service.findByName(name);
 		} else {
 			observable = service.findAll();
 		}
 		
-		if (phoneNumber != null) {
-			observable.filter((person) -> phoneNumber.equals(person.getPhoneNumber()));
-		}
-		
-		final List<Person> persons = observable.toList().toBlocking().single();
+		final List<Person> persons = observable.filter(phoneNumber(phoneNumber)).toList().toBlocking().single();
 		if (persons.isEmpty()) {
 			Response.status(Status.NOT_FOUND).build();
 		}
 		return Response.ok(persons).build();
+	}
+	
+	private Func1<Person, Boolean> phoneNumber(String phoneNumber) {
+		return (person) -> {
+			if (phoneNumber != null) {
+				return phoneNumber.equals(person.getPhoneNumber());
+			}
+			return true;
+		};
 	}
 	
 }
