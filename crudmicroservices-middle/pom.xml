@@ -271,7 +271,7 @@
 								<phase>pre-integration-test</phase>
 								<configuration>
 									<fork>true</fork>
-									<path>/crudmicroservices</path>
+									<path>/crudmicroservicesmiddle</path>
 									<port>${tomcat.port}</port>
 									<update>true</update>
 									<systemProperties>
@@ -357,7 +357,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<warName>crudmicroservices</warName>
+					<warName>crudmicroservicesmiddle</warName>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -365,7 +365,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<path>/crudmicroservices</path>
+					<path>/crudmicroservicesmiddle</path>
 					<port>${tomcat.port}</port>
 					<useTestClasspath>false</useTestClasspath>
 					<systemProperties>

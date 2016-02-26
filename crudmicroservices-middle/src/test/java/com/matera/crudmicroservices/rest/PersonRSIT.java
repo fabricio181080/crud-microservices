@@ -2,6 +2,8 @@ package com.matera.crudmicroservices.rest;
 
 import java.util.List;
 
+import javax.ws.rs.core.Response.Status;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -18,6 +20,8 @@ import com.matera.crudmicroservices.store.PersonStore;
 import com.matera.crudmicroservices.store.impl.PersonStoreImpl;
 
 public class PersonRSIT {
+    
+    private static final String URL = "http://localhost:9080/crudmicroservicesmiddle";
 
 	@BeforeClass
 	public static void before() {
@@ -36,8 +40,11 @@ public class PersonRSIT {
 	@Test
 	public void byId() throws Exception {
 		
-		final String uri = "http://localhost:9080/crudmicroservices/person/3";
+        final String uri = URL + "/person/3";
 		HttpResponse response = doGET(uri);
+		
+		Assert.assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
+		
 		com.matera.crudmicroservices.core.entities.Person person = 
 				Utils.fromJson(
 						response.getEntity(),
@@ -52,8 +59,10 @@ public class PersonRSIT {
 	@Test
 	public void all() throws Exception {
 	
-		final String uri = "http://localhost:9080/crudmicroservices/person/all";
+		final String uri = URL + "/person/all";
 		HttpResponse response = doGET(uri);
+		
+		Assert.assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
 		List<com.matera.crudmicroservices.core.entities.Person> persons = 
 				Utils.fromJson(
@@ -66,8 +75,10 @@ public class PersonRSIT {
 	@Test
 	public void filterByName() throws Exception {
 		
-		final String uri = "http://localhost:9080/crudmicroservices/person/all?name=Andre%20Grant";
+		final String uri = URL + "/person/all?name=Andre%20Grant";
 		HttpResponse response = doGET(uri);
+
+		Assert.assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 		
 		List<com.matera.crudmicroservices.core.entities.Person> persons = 
 				Utils.fromJson(
@@ -80,8 +91,10 @@ public class PersonRSIT {
 	@Test
 	public void filterByPhoneNumber() throws Exception {
 		
-		final String uri = "http://localhost:9080/crudmicroservices/person/all?phoneNumber=202-555-0155";
+		final String uri = URL + "/person/all?phoneNumber=202-555-0155";
 		HttpResponse response = doGET(uri);
+		
+		Assert.assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 		
 		List<com.matera.crudmicroservices.core.entities.Person> persons = 
 				Utils.fromJson(
@@ -94,8 +107,10 @@ public class PersonRSIT {
 	@Test
 	public void filterByNameAndPhoneNumber() throws Exception {
 		
-		final String uri = "http://localhost:9080/crudmicroservices/person/all?name=Andre%20Grant&phoneNumber=202-555-0155";
+		final String uri = URL + "/person/all?name=Andre%20Grant&phoneNumber=202-555-0155";
 		HttpResponse response = doGET(uri);
+		
+		Assert.assertEquals(Status.OK.getStatusCode(), response.getStatusLine().getStatusCode());
 
 		List<com.matera.crudmicroservices.core.entities.Person> persons = 
 				Utils.fromJson(

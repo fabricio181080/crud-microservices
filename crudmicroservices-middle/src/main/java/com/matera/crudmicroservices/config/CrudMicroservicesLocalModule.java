@@ -16,7 +16,6 @@ public class CrudMicroservicesLocalModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(PersonStore.class).to(PersonStoreImpl.class).in(LazySingletonScope.get());
-		bind(PersonService.class).to(PersonService.class).in(LazySingletonScope.get());
 		bind(Cache.class).to(CacheStub.class).in(LazySingletonScope.get());
 	}
 
