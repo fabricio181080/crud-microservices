@@ -9,14 +9,14 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.google.inject.util.Providers;
 import com.matera.crudmicroservices.core.domain.Person;
-import com.matera.crudmicroservices.store.impl.PersonStoreImpl;
+import com.matera.crudmicroservices.store.impl.PersonStoreCassandra;
 
 public class PersonStoreIT {
 
 	private final Session session = Cluster.builder().addContactPoint("127.0.0.1").build().connect("crudmicroservices");
 	
 	private final PersonStore store = 
-			new PersonStoreImpl(Providers.of(session));
+			new PersonStoreCassandra(Providers.of(session));
 	
 	@BeforeClass
 	public static void setup() {

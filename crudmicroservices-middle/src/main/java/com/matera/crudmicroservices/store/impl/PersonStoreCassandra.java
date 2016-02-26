@@ -22,9 +22,9 @@ import com.netflix.config.DynamicStringProperty;
 
 import rx.Observable;
 
-public class PersonStoreImpl implements PersonStore {
+public class PersonStoreCassandra implements PersonStore {
 	
-	static final Logger logger = LoggerFactory.getLogger(PersonStoreImpl.class);
+	static final Logger logger = LoggerFactory.getLogger(PersonStoreCassandra.class);
 	
 	private static final DynamicStringProperty KEYSPACE = 
 			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservicesmiddle.cassandra.keyspace", "crudmicroservices");
@@ -46,7 +46,7 @@ public class PersonStoreImpl implements PersonStore {
 	private final Provider<Session> session;
 	
 	@Inject
-	public PersonStoreImpl(Provider<Session> session) {
+	public PersonStoreCassandra(Provider<Session> session) {
 		this.session = session;
 	}
 	

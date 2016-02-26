@@ -17,7 +17,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.util.Providers;
 import com.matera.crudmicroservices.core.domain.Person;
 import com.matera.crudmicroservices.store.PersonStore;
-import com.matera.crudmicroservices.store.impl.PersonStoreImpl;
+import com.matera.crudmicroservices.store.impl.PersonStoreCassandra;
 
 public class PersonRSIT {
     
@@ -27,7 +27,7 @@ public class PersonRSIT {
 	public static void before() {
 		
 		Session session = Cluster.builder().addContactPoint("127.0.0.1").build().connect("crudmicroservices");
-		PersonStore store = new PersonStoreImpl(Providers.of(session));
+		PersonStore store = new PersonStoreCassandra(Providers.of(session));
 		
 		store.save(Person.builder().withId(1L).withName("Andre Grant").withPhoneNumber("202-555-0166").build());
 		store.save(Person.builder().withId(2L).withName("Rachael Mccormick").withPhoneNumber("202-555-0187").build());
