@@ -1,4 +1,4 @@
-package com.matera.crudmicroservices.service.impl;
+package com.matera.crudmicroservices.service;
 
 class PersonCacheKey {
 

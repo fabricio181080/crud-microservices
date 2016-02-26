@@ -21,5 +21,5 @@ public class RESTModule extends JerseyServletModule {
 		
 		serve("/*").with(GuiceContainer.class);
 	}
-
+	
 }

@@ -11,5 +11,5 @@ public class Bootstrap extends ServerBootstrap {
 		binder.install(new RESTModule());
 		binder.install(new CrudMicroservicesLocalModule());
 	}
-	
+
 }

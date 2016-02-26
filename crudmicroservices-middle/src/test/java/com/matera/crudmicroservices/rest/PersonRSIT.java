@@ -2,7 +2,6 @@ package com.matera.crudmicroservices.rest;
 
 import java.util.List;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -13,19 +12,12 @@ import org.junit.Test;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.google.inject.util.Providers;
 import com.matera.crudmicroservices.core.domain.Person;
 import com.matera.crudmicroservices.store.PersonStore;
 import com.matera.crudmicroservices.store.impl.PersonStoreImpl;
 
 public class PersonRSIT {
-
-	private ObjectMapper mapper = new ObjectMapper();
-	{
-		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.PASCAL_CASE_TO_CAMEL_CASE);
-	}
 
 	@BeforeClass
 	public static void before() {
@@ -46,7 +38,11 @@ public class PersonRSIT {
 		
 		final String uri = "http://localhost:9080/crudmicroservices/person/3";
 		HttpResponse response = doGET(uri);
-		com.matera.crudmicroservices.core.entities.Person person = getEntity(response.getEntity(), com.matera.crudmicroservices.core.entities.Person.class);
+		com.matera.crudmicroservices.core.entities.Person person = 
+				Utils.fromJson(
+						response.getEntity(),
+						com.matera.crudmicroservices.core.entities.Person.class
+					);
 		
 		Assert.assertEquals(Long.valueOf(3), person.getId());
 		Assert.assertEquals("Willie Barrett", person.getName());
@@ -60,7 +56,7 @@ public class PersonRSIT {
 		HttpResponse response = doGET(uri);
 
 		List<com.matera.crudmicroservices.core.entities.Person> persons = 
-				getEntity(
+				Utils.fromJson(
 						response.getEntity(),
 						new TypeReference<List<com.matera.crudmicroservices.core.entities.Person>>() { }
 					);
@@ -74,7 +70,7 @@ public class PersonRSIT {
 		HttpResponse response = doGET(uri);
 		
 		List<com.matera.crudmicroservices.core.entities.Person> persons = 
-				getEntity(
+				Utils.fromJson(
 						response.getEntity(),
 						new TypeReference<List<com.matera.crudmicroservices.core.entities.Person>>() { }
 					);
@@ -88,7 +84,7 @@ public class PersonRSIT {
 		HttpResponse response = doGET(uri);
 		
 		List<com.matera.crudmicroservices.core.entities.Person> persons = 
-				getEntity(
+				Utils.fromJson(
 						response.getEntity(),
 						new TypeReference<List<com.matera.crudmicroservices.core.entities.Person>>() { }
 					);
@@ -102,7 +98,7 @@ public class PersonRSIT {
 		HttpResponse response = doGET(uri);
 
 		List<com.matera.crudmicroservices.core.entities.Person> persons = 
-				getEntity(
+				Utils.fromJson(
 						response.getEntity(),
 						new TypeReference<List<com.matera.crudmicroservices.core.entities.Person>>() { }
 					);
@@ -117,14 +113,6 @@ public class PersonRSIT {
 		HttpGet request = new HttpGet(uri);
 		request.addHeader("Content-Type", "application/json");
 		return new DefaultHttpClient().execute(request);
-	}
-	
-	private <T> T getEntity(HttpEntity entity, Class<T> klass) throws Exception {
-		return mapper.readValue(entity.getContent(), klass);
-	}
-	
-	private <T> T getEntity(HttpEntity entity, TypeReference<T> type) throws Exception {
-		return mapper.readValue(entity.getContent(), type);
 	}
 	
 }

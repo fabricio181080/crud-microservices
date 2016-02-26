@@ -7,7 +7,6 @@ import com.google.inject.Provides;
 import com.matera.crudmicroservices.cache.Cache;
 import com.matera.crudmicroservices.cache.CacheImpl;
 import com.matera.crudmicroservices.service.PersonService;
-import com.matera.crudmicroservices.service.impl.PersonServiceImpl;
 import com.matera.crudmicroservices.store.PersonStore;
 import com.matera.crudmicroservices.store.impl.PersonStoreImpl;
 import com.netflix.config.DynamicPropertyFactory;
@@ -33,7 +32,7 @@ public class CrudMicroservicesModule extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(PersonStore.class).to(PersonStoreImpl.class).in(LazySingletonScope.get());
-		bind(PersonService.class).to(PersonServiceImpl.class).in(LazySingletonScope.get());
+		bind(PersonService.class).to(PersonService.class).in(LazySingletonScope.get());
 		bind(Cache.class).to(CacheImpl.class).in(LazySingletonScope.get());
 	}
 
