@@ -22,7 +22,7 @@ import com.google.inject.util.Providers;
 import com.matera.crudmicroservices.core.convert.PersonConverter;
 import com.matera.crudmicroservices.core.domain.Person;
 import com.matera.crudmicroservices.store.PersonStore;
-import com.matera.crudmicroservices.store.impl.PersonStoreImpl;
+import com.matera.crudmicroservices.store.impl.PersonStoreCassandra;
 
 public class PersonRSIT {
 
@@ -36,7 +36,7 @@ public class PersonRSIT {
         session.execute("TRUNCATE person;");
         session.execute("TRUNCATE person_by_name;");
 
-        PersonStore store = new PersonStoreImpl(Providers.of(session));
+        PersonStore store = new PersonStoreCassandra(Providers.of(session));
 
         store.save(Person.builder().withId(1L).withName("Andre Grant").withPhoneNumber("202-555-0166").build());
         store.save(Person.builder().withId(2L).withName("Rachael Mccormick").withPhoneNumber("202-555-0187").build());
