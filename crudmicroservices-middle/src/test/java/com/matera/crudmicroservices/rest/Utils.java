@@ -41,4 +41,9 @@ public class Utils {
         return (T) parser.readValue(is, type);
     }
 
+    public static String toJson(Object obj) throws IOException {
+
+        return parser.writeValueAsString(obj);
+    }
+
 }
