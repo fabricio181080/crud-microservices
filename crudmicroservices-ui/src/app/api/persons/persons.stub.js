@@ -21,13 +21,15 @@
         }
       ];
 
-      $httpBackend.whenGET(personsConfig.mock.list).respond({
-        totalAssets : assets.length,
-        assets : assets
+      $httpBackend.whenGET(personsConfig.mock.list).respond(function(method, url) {
+        return [200, {
+          totalAssets : assets.length,
+          assets : assets
+        }];
       });
 
       $httpBackend.whenPOST(personsConfig.mock.list).respond(function(method, url, data) {
-        var person = JSON.fromJson(data);
+        var person = angular.fromJson(data);
         person.id = nextId++;
         assets.push(person);
         return [201, person];
@@ -57,13 +59,24 @@
         });
 
         if (person) {
-          var newPerson = JSON.fromJson(data);
+          var newPerson = angular.fromJson(data);
           angular.copy(newPerson, person);
 
           return [200, person];
         }
 
         return [404];
+      });
+
+      $httpBackend.whenDELETE(personsConfig.mock.edit).respond(function(method, url) {
+        var idIndex = url.lastIndexOf("/");
+        var id = url.substring(idIndex + 1 , url.length);
+
+        assets = assets.filter(function(p) {
+          return p.id !== parseInt(id);
+        });
+
+        return [204];
       });
     }
 
