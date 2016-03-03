@@ -20,7 +20,7 @@ table.table.table-striped(ng-if="vm.items.length")
       td.tools
         a.btn.btn-primary(ui-sref=".edit({id: item.id})")
           i.fa.fa-pencil
-        a.btn.btn-danger(confirm-remove="item")
+        a.btn.btn-danger(confirm-remove="vm.remove(item)")
           i.fa.fa-trash
   
 .alert.alert-info(ng-hide="vm.items.length") No result found!
