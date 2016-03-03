@@ -1,5 +1,6 @@
 package com.matera.crudmicroservices.api.command;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matera.crudmicroservices.core.domain.Person;
 import com.netflix.client.http.HttpRequest;
 import com.netflix.client.http.HttpRequest.Verb;
@@ -13,7 +14,6 @@ import java.net.URI;
 
 import javax.ws.rs.core.UriBuilder;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +26,7 @@ public class CreatePersonCommand extends HystrixCommand<Person> {
         Setter.withGroupKey(CrudmicroservicesGroupKeys.MIDDLE)
             .andCommandKey(HystrixCommandKey.Factory.asKey(CreatePersonCommand.class.getName()));
 
-    public static final String DEFAULT_CREATE_PERSON_URL = "crudmicroservices.person.create.url"; // TODO
+    public static final String DEFAULT_CREATE_PERSON_URL = "crudmicroservicesmiddle/person";
 
     public static final String CREATE_PERSON_URL = "crudmicroservices.person.create.url";
 
