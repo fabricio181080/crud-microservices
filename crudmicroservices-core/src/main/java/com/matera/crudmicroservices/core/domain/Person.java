@@ -17,13 +17,17 @@ import com.google.common.base.Strings;
 public class Person implements Serializable {
 
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = -1594987066010527072L;
-	
-	private final Long id;
-    private final String name;
-    private final String phoneNumber;
+     * 
+     */
+    private static final long serialVersionUID = -1594987066010527072L;
+
+    private Long id;
+    private String name;
+    private String phoneNumber;
+
+    public Person() {
+        // TODO Auto-generated constructor stub
+    }
 
     private Person(Long id, String name, String phoneNumber) {
         this.id = id;

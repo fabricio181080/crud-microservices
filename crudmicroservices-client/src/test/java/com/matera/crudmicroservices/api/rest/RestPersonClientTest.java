@@ -32,7 +32,6 @@ public class RestPersonClientTest {
     @Mock
     private RestClient restClient;
 
-    @Mock
     private ObjectMapper mapper;
 
     @InjectMocks
@@ -41,6 +40,7 @@ public class RestPersonClientTest {
     @Before
     public void setUp() {
 
+        mapper = new ObjectMapper();
         client = new RestPersonClient(restClient, mapper);
     }
 
@@ -55,13 +55,13 @@ public class RestPersonClientTest {
         HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, input);
         Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
 
-        Observable<Person> responsePerson = client.createPerson(Mockito.any(Person.class));
+        Observable<Person> responsePerson = client.createPerson(null);
 
         Person person = responsePerson.toBlocking().single();
 
-        Assert.assertEquals(new Long(1L), person.getId());
+        Assert.assertEquals(new Long(1), person.getId());
         Assert.assertEquals("Person Name", person.getName());
-        Assert.assertEquals(new Long(12345), person.getPhoneNumber());
+        Assert.assertEquals("12345", person.getPhoneNumber());
     }
 
 }
