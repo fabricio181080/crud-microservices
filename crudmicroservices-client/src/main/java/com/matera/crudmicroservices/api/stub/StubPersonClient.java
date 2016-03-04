@@ -5,7 +5,7 @@ package com.matera.crudmicroservices.api.stub;
 
 import com.google.inject.Inject;
 import com.matera.crudmicroservices.api.PersonClient;
-import com.matera.crudmicroservices.core.domain.Person;
+import com.matera.crudmicroservices.core.entities.Person;
 import com.netflix.niws.client.http.RestClient;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -30,8 +30,12 @@ public class StubPersonClient implements PersonClient {
      */
     public Observable<Person> createPerson(Person person) {
 
-        return Observable
-            .just(Person.builder().withId(1L).withName("Some Person Name").withPhoneNumber("12345678").build());
+        person = new Person();
+        person.setId(1L);
+        person.setName("Some Person Name");
+        person.setPhoneNumber("2345678");
+
+        return Observable.just(person);
     }
 
 }

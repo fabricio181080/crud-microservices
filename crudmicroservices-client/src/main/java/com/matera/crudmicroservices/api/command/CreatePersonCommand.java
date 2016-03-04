@@ -1,7 +1,7 @@
 package com.matera.crudmicroservices.api.command;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.matera.crudmicroservices.core.domain.Person;
+import com.matera.crudmicroservices.core.entities.Person;
 import com.netflix.client.http.HttpRequest;
 import com.netflix.client.http.HttpRequest.Verb;
 import com.netflix.client.http.HttpResponse;

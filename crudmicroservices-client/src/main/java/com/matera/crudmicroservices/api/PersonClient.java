@@ -1,6 +1,6 @@
 package com.matera.crudmicroservices.api;
 
-import com.matera.crudmicroservices.core.domain.Person;
+import com.matera.crudmicroservices.core.entities.Person;
 
 import rx.Observable;
 
