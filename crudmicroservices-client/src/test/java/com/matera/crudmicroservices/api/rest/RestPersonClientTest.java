@@ -42,6 +42,7 @@ public class RestPersonClientTest {
 
         mapper = new ObjectMapper();
         client = new RestPersonClient(restClient, mapper);
+        System.setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", "300000");
     }
 
     @Test
