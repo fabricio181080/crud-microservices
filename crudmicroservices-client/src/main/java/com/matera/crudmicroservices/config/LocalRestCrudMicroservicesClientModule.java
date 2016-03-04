@@ -1,6 +1,5 @@
 package com.matera.crudmicroservices.config;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
@@ -13,12 +12,6 @@ import com.matera.crudmicroservices.api.PersonClient;
 import com.matera.crudmicroservices.api.rest.RestPersonClient;
 import com.netflix.client.ClientFactory;
 import com.netflix.niws.client.http.RestClient;
-
-import java.math.BigInteger;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.mockito.cglib.proxy.Mixin;
 
 public class LocalRestCrudMicroservicesClientModule extends AbstractModule {
 
@@ -43,16 +36,9 @@ public class LocalRestCrudMicroservicesClientModule extends AbstractModule {
 
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JaxbAnnotationModule());
-        objectMapper.addMixInAnnotations(XMLGregorianCalendar.class, Mixin.class);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         return objectMapper;
     }
 
-    public static interface MixIn {
-
-        @JsonIgnore
-        @org.codehaus.jackson.annotate.JsonIgnore
-        public void setYear(BigInteger year);
-    }
 }
