@@ -14,9 +14,6 @@ import java.net.URI;
 
 import javax.ws.rs.core.UriBuilder;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * 
  */
@@ -29,8 +26,6 @@ public class CreatePersonCommand extends HystrixCommand<Person> {
     public static final String DEFAULT_CREATE_PERSON_URL = "crudmicroservicesmiddle/person";
 
     public static final String CREATE_PERSON_URL = "crudmicroservices.person.create.url";
-
-    private static final Logger LOG = LoggerFactory.getLogger(CreatePersonCommand.class);
 
     private ObjectMapper mapper;
 
@@ -60,17 +55,6 @@ public class CreatePersonCommand extends HystrixCommand<Person> {
         try (HttpResponse response = restClient.execute(request)) {
             return mapper.readValue(response.getInputStream(), Person.class);
         }
-    }
-
-    @Override
-    protected Person getFallback() {
-
-        Throwable exception = getFailedExecutionException();
-        if (exception != null) {
-            LOG.error("Error creating person: " + person, exception);
-        }
-
-        return null;
     }
 
 }

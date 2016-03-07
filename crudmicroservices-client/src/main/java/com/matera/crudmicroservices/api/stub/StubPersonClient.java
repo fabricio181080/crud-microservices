@@ -30,11 +30,6 @@ public class StubPersonClient implements PersonClient {
      */
     public Observable<Person> createPerson(Person person) {
 
-        person = new Person();
-        person.setId(1L);
-        person.setName("Some Person Name");
-        person.setPhoneNumber("2345678");
-
         return Observable.just(person);
     }
 

@@ -3,7 +3,7 @@
  */
 package com.matera.crudmicroservices.api.rest;
 
-import static com.matera.crudmicroservices.api.rest.ObservableUtil.checkNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -36,7 +36,8 @@ public class RestPersonClient implements PersonClient {
      */
     public Observable<Person> createPerson(Person person) {
 
-        return new CreatePersonCommand(mapper, restClient, person).observe().flatMap(checkNull());
+        checkNotNull(person, "Person musn't be null");
+        return new CreatePersonCommand(mapper, restClient, person).observe();
     }
 
 }

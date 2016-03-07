@@ -56,7 +56,7 @@ public class RestPersonClientTest {
         HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, input);
         Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
 
-        Observable<Person> responsePerson = client.createPerson(null);
+        Observable<Person> responsePerson = client.createPerson(mapper.readValue(input, Person.class));
 
         Person person = responsePerson.toBlocking().single();
 
