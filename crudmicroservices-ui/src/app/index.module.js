@@ -2,6 +2,16 @@
   'use strict';
 
   angular
-    .module('crudmicroservicesUi', ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ngMessages', 'ngAria', 'ngResource', 'ui.router', 'ui.bootstrap', 'toastr']);
-
+    .module('crudmicroservicesUi',
+    [
+      'ngAnimate',
+      'ngTouch',
+      'ngSanitize',
+      'ngMessages',
+      'ngResource',
+      'ui.router',
+      'ui.bootstrap',
+      'toastr',
+      'ngMockE2E'
+    ]);
 })();

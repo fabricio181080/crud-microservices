@@ -5,6 +5,10 @@ form.form(name="form")
     label(for="name") Name
     input.form-control#name(type="text" placeholder="Name" ng-model="vm.model.name" required)
     
+  .form-group
+    label(for="phoneNumber") Phone
+    input.form-control#phoneNumber(type="text" placeholder="Phone" ng-model="vm.model.phoneNumber" required)
+    
   .group
     button.btn.btn-success(ng-click="vm.save()" ng-disabled="form.$invalid" type="button") 
       i.fa.fa-save

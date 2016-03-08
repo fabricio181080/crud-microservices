@@ -4,6 +4,31 @@
   <artifactId>crudmicroservices</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+
+  <developers>
+    <developer>
+      <name>Paulo Almeida</name>
+      <organization>MATERA Systems</organization>
+    </developer>
+    <developer>
+      <name>Geiser Menoia</name>
+      <organization>MATERA Systems</organization>
+    </developer>
+    <developer>
+      <id>falci</id>
+      <name>Fernando Falci</name>
+      <organization>MATERA Systems</organization>
+    </developer>
+  </developers>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <modules>
   	<module>crudmicroservices-client</module>
   	<module>crudmicroservices-middle</module>

@@ -7,13 +7,6 @@
   </parent>
   <artifactId>crudmicroservices-ui</artifactId>
 	<packaging>war</packaging>
-  <developers>
-    <developer>
-      <id>falci</id>
-      <name>Fernando Falci</name>
-      <organization>MATERA Systems</organization>
-    </developer>
-  </developers>
   <build>
     <finalName>crudmicroservices-ui</finalName>
     <plugins>

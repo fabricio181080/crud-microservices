@@ -8,18 +8,10 @@
     </parent>
     <artifactId>crudmicroservices-core</artifactId>
 
-    <developers>
-        <developer>
-            <name>Geiser Menoia</name>
-            <organization>MATERA Systems</organization>
-        </developer>
-    </developers>
-
     <properties>
         <guava.version>16.0.1</guava.version>
         <apache-commons.version>3.3.2</apache-commons.version>
         <jaxb2-commons.version>0.6.5</jaxb2-commons.version>
-        <junit.version>4.11</junit.version>
     </properties>
 
     <dependencies>
@@ -38,13 +30,6 @@
             <groupId>org.jvnet.jaxb2_commons</groupId>
             <artifactId>jaxb2-basics-runtime</artifactId>
             <version>${jaxb2-commons.version}</version>
-        </dependency>
-        <!-- Use JUnit for unit and integration tests -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
