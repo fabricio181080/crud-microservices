@@ -12,6 +12,7 @@
       'ui.router',
       'ui.bootstrap',
       'toastr',
-      'ngMockE2E'
+
+      'crudmicroservicesUi.core'
     ]);
 })();

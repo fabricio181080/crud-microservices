@@ -29,6 +29,8 @@ gulp.task('inject', ['scripts', 'styles'], function () {
 
   if(!argv.mock){
     jsFiles.push(path.join('!' + conf.paths.src, '/app/**/*.mock.js'));
+  } else {
+    jsFiles.push(path.join('!' + conf.paths.src, '/app/core/core.js'));
   }
 
   var injectScripts = gulp.src(jsFiles)
