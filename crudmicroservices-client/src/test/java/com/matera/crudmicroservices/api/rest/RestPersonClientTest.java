@@ -1,5 +1,7 @@
 package com.matera.crudmicroservices.api.rest;
 
+import static org.junit.Assert.assertEquals;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.netflix.client.http.HttpRequest;
@@ -11,7 +13,6 @@ import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,18 +34,14 @@ public class RestPersonClientTest {
     @Mock
     private RestClient restClient;
 
-    private ObjectMapper mapper;
-
     @InjectMocks
-    RestPersonClient client;
+    RestPersonClient client = new RestPersonClient(restClient, new ObjectMapper());
 
     String input;
 
     @Before
     public void setUp() throws IOException {
 
-        mapper = new ObjectMapper();
-        client = new RestPersonClient(restClient, mapper);
         System.setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", "300000");
 
         try (InputStream inputStream = this.getClass().getResourceAsStream("/test-data/person.json")) {
@@ -55,31 +52,44 @@ public class RestPersonClientTest {
     @Test
     public void createPerson() throws Exception {
 
+        Person stubPerson = createStubPerson();
+
         HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, input);
         Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
 
-        Observable<Person> responsePerson = client.createPerson(mapper.readValue(input, Person.class));
+        Observable<Person> responsePerson = client.createPerson(stubPerson);
 
         Person person = responsePerson.toBlocking().single();
 
-        Assert.assertEquals(new Long(1), person.getId());
-        Assert.assertEquals("Person Name", person.getName());
-        Assert.assertEquals("12345", person.getPhoneNumber());
+        assertEquals(stubPerson.getId(), person.getId());
+        assertEquals(stubPerson.getName(), person.getName());
+        assertEquals(stubPerson.getPhoneNumber(), person.getPhoneNumber());
     }
 
     @Test
     public void updatePerson() throws Exception {
 
+        Person stubPerson = createStubPerson();
+
         HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, input);
         Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
 
-        Observable<Person> responsePerson = client.updatePerson(1L, mapper.readValue(input, Person.class));
+        Observable<Person> responsePerson = client.updatePerson(1L, stubPerson);
 
         Person person = responsePerson.toBlocking().single();
 
-        Assert.assertEquals(new Long(1), person.getId());
-        Assert.assertEquals("Person Name", person.getName());
-        Assert.assertEquals("12345", person.getPhoneNumber());
+        assertEquals(stubPerson.getId(), person.getId());
+        assertEquals(stubPerson.getName(), person.getName());
+        assertEquals(stubPerson.getPhoneNumber(), person.getPhoneNumber());
+    }
+
+    private Person createStubPerson() {
+
+        Person person = new Person();
+        person.setId(1L);
+        person.setName("Stub Person");
+        person.setPhoneNumber("12345");
+        return person;
     }
 
 }
