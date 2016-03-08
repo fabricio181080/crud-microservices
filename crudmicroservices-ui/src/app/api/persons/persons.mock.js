@@ -21,7 +21,7 @@
         }
       ];
 
-      $httpBackend.whenGET(personsConfig.mock.list).respond(function(method, url) {
+      $httpBackend.whenGET(personsConfig.mock.list).respond(function() {
         return [200, {
           totalAssets : assets.length,
           assets : assets
