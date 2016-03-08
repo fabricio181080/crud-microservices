@@ -5,7 +5,7 @@ var gulp = require('gulp');
 var conf = require('./conf');
 
 var $ = require('gulp-load-plugins')();
-
+var argv = require('yargs').argv;
 var wiredep = require('wiredep').stream;
 var _ = require('lodash');
 
@@ -21,12 +21,17 @@ gulp.task('inject', ['scripts', 'styles'], function () {
     path.join('!' + conf.paths.tmp, '/serve/app/vendor.css')
   ], { read: false });
 
-  var injectScripts = gulp.src([
+  var jsFiles = [
     path.join(conf.paths.src, '/app/**/*.module.js'),
     path.join(conf.paths.src, '/app/**/*.js'),
-    path.join('!' + conf.paths.src, '/app/**/*.spec.js'),
-    path.join('!' + conf.paths.src, '/app/**/*.mock.js'),
-  ])
+    path.join('!' + conf.paths.src, '/app/**/*.spec.js')
+  ];
+
+  if(!argv.mock){
+    jsFiles.push(path.join('!' + conf.paths.src, '/app/**/*.mock.js'));
+  }
+
+  var injectScripts = gulp.src(jsFiles)
   .pipe($.angularFilesort()).on('error', conf.errorHandler('AngularFilesort'));
 
   var injectOptions = {
