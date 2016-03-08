@@ -15,17 +15,19 @@ import java.net.URI;
 import javax.ws.rs.core.UriBuilder;
 
 /**
- * 
+ * Hystrix command to create a Person
+ *
+ * @author egzefer
  */
-public class CreatePersonCommand extends HystrixCommand<Person> {
+public class PersonCreateCommand extends HystrixCommand<Person> {
 
-    private static final HystrixCommand.Setter CREATE_PERSON_SETTER =
+    private static final HystrixCommand.Setter PERSON_CREATE_SETTER =
         Setter.withGroupKey(CrudmicroservicesGroupKeys.MIDDLE)
-            .andCommandKey(HystrixCommandKey.Factory.asKey(CreatePersonCommand.class.getName()));
+            .andCommandKey(HystrixCommandKey.Factory.asKey(PersonCreateCommand.class.getName()));
 
-    public static final String DEFAULT_CREATE_PERSON_URL = "crudmicroservicesmiddle/person";
+    public static final String DEFAULT_PERSON_CREATE_URL = "crudmicroservicesmiddle/person";
 
-    public static final String CREATE_PERSON_URL = "crudmicroservices.person.create.url";
+    public static final String PERSON_CREATE_URL = "crudmicroservices.person.create.url";
 
     private ObjectMapper mapper;
 
@@ -33,9 +35,9 @@ public class CreatePersonCommand extends HystrixCommand<Person> {
 
     private Person person;
 
-    public CreatePersonCommand(ObjectMapper mapper, final RestClient restClient, Person person) {
+    public PersonCreateCommand(ObjectMapper mapper, final RestClient restClient, Person person) {
 
-        super(CREATE_PERSON_SETTER);
+        super(PERSON_CREATE_SETTER);
         this.mapper = mapper;
 
         this.restClient = restClient;
@@ -45,10 +47,10 @@ public class CreatePersonCommand extends HystrixCommand<Person> {
     @Override
     protected Person run() throws Exception {
 
-        String createPersonURL =
-            DynamicPropertyFactory.getInstance().getStringProperty(CREATE_PERSON_URL, DEFAULT_CREATE_PERSON_URL).get();
+        String personCreateURL =
+            DynamicPropertyFactory.getInstance().getStringProperty(PERSON_CREATE_URL, DEFAULT_PERSON_CREATE_URL).get();
 
-        URI URI = UriBuilder.fromPath(createPersonURL).build();
+        URI URI = UriBuilder.fromPath(personCreateURL).build();
 
         HttpRequest request = HttpRequest.newBuilder().verb(Verb.POST).uri(URI).entity(person).build();
 
