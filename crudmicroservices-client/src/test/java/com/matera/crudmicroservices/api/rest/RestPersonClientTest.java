@@ -8,10 +8,6 @@ import com.netflix.client.http.HttpRequest;
 import com.netflix.client.http.HttpResponse;
 import com.netflix.niws.client.http.RestClient;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,16 +33,10 @@ public class RestPersonClientTest {
     @InjectMocks
     RestPersonClient client = new RestPersonClient(restClient, new ObjectMapper());
 
-    String input;
-
     @Before
-    public void setUp() throws IOException {
+    public void setUp() {
 
         System.setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", "300000");
-
-        try (InputStream inputStream = this.getClass().getResourceAsStream("/test-data/person.json")) {
-            input = IOUtils.toString(inputStream);
-        }
     }
 
     @Test
@@ -54,7 +44,7 @@ public class RestPersonClientTest {
 
         Person stubPerson = createStubPerson();
 
-        HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, input);
+        HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, stubPerson);
         Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
 
         Observable<Person> responsePerson = client.createPerson(stubPerson);
@@ -71,7 +61,7 @@ public class RestPersonClientTest {
 
         Person stubPerson = createStubPerson();
 
-        HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, input);
+        HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, stubPerson);
         Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
 
         Observable<Person> responsePerson = client.updatePerson(1L, stubPerson);

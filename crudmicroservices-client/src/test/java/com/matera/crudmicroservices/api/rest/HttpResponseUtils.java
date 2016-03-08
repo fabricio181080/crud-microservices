@@ -1,11 +1,14 @@
 package com.matera.crudmicroservices.api.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
 import com.netflix.client.ClientException;
 import com.netflix.client.http.HttpResponse;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
@@ -18,6 +21,8 @@ import java.util.Map;
  */
 public class HttpResponseUtils {
 
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     /**
      * Create an HttpResponse using status and entity. Entity can be null.
      * 
@@ -25,7 +30,7 @@ public class HttpResponseUtils {
      * @param entity
      * @return HttpResponse
      */
-    public static HttpResponse createResponse(final int status, final String entity) {
+    public static HttpResponse createResponse(final int status, final Object entity) {
 
         return new HttpResponse() {
 
@@ -63,7 +68,16 @@ public class HttpResponseUtils {
             public InputStream getInputStream() throws ClientException {
 
                 if (entity != null) {
-                    return new ByteArrayInputStream(entity.getBytes());
+
+                    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+                        mapper.writeValue(baos, entity);
+                        return new ByteArrayInputStream(baos.toByteArray());
+
+                    } catch (IOException e) {
+                        throw new RuntimeException();
+                    }
+
                 }
                 return null;
             }
