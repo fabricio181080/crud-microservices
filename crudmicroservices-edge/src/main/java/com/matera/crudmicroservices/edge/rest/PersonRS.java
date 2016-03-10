@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.google.inject.Inject;
+import com.matera.crudmicroservices.core.domain.Person;
 import com.matera.crudmicroservices.edge.rest.filter.PersonFilter;
 import com.matera.crudmicroservices.edge.service.PersonService;
 import com.sun.jersey.api.core.InjectParam;
@@ -42,8 +45,8 @@ public class PersonRS {
 	 * @return
 	 */
 	@GET
-	public Response getPersonsList(@InjectParam PersonFilter filter) {
-		List<?> persons = service.getPersonsList(filter).toBlocking().single();
+	public Response getPersonList(@InjectParam PersonFilter filter) {
+		List<Person> persons = service.getPersonList(filter).toBlocking().single();
 		
 		return Response.ok(persons).build();
 	}
@@ -59,13 +62,44 @@ public class PersonRS {
 	@Path("/{id}")
 	public Response getPerson(@PathParam("id") Long id) {
 		try{
-			Object person = service.getPersons(id).toBlocking().single();
+			Person person = service.getPerson(id).toBlocking().single();
 		
 			return Response.ok(person).build();
 			
 		} catch(NoSuchElementException e) {
 			return Response.status(Status.NOT_FOUND).build();
 		}
+	}
+
+	/**
+	 * Creates a new {@link Person}
+	 * 
+	 * @param person
+	 * @return
+	 */
+	@POST
+	public Response createPerson(Person person){
+		Person newPerson = service.createPerson(person).toBlocking().single();
+		
+		return Response
+				.status(Status.CREATED)
+				.entity(newPerson)
+				.build();
+	}
+
+	/**
+	 * Updates a {@link Person}
+	 * 
+	 * @param id
+	 * @param person
+	 * @return
+	 */
+	@PUT
+	@Path("/{id}")
+	public Response updatePerson(@PathParam("id") Long id, Person person){
+		Person newPerson = service.updatePerson(id, person).toBlocking().single();		
+		
+		return Response.ok(newPerson).build();
 	}
 
 }
