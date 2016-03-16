@@ -6,7 +6,7 @@
     .directive('confirmRemove', confirmRemove);
 
   /** @ngInject */
-  function confirmRemove($uibModal, $log) {
+  function confirmRemove($uibModal, $log, $parse) {
     var directive = {
       restrict: 'A',
       link: link
@@ -14,7 +14,7 @@
 
     return directive;
 
-    function link ($scope, elem) {
+    function link ($scope, elem, attrs) {
       elem.on('click', function() {
         var modalInstance = $uibModal.open({
           templateUrl: 'app/components/confirm-remove/confirm-remove.html',
@@ -22,10 +22,10 @@
           controllerAs: 'ctrl'
         });
 
-        modalInstance.result.then(function (item) {
-          $scope.selected = item;
-        }, function () {
-          $log.info('Modal dismissed at: ' + new Date());
+        var callback = $parse(attrs.confirmRemove);
+
+        modalInstance.result.then(function () {
+          callback($scope);
         });
       });
     }

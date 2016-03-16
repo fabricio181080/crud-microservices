@@ -1,7 +1,7 @@
 package com.matera.crudmicroservices.store;
 
-import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -9,25 +9,26 @@ import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.google.inject.util.Providers;
 import com.matera.crudmicroservices.core.domain.Person;
-import com.matera.crudmicroservices.store.impl.PersonStoreImpl;
+import com.matera.crudmicroservices.store.impl.PersonStoreCassandra;
 
 public class PersonStoreIT {
 
 	private final Session session = Cluster.builder().addContactPoint("127.0.0.1").build().connect("crudmicroservices");
 	
 	private final PersonStore store = 
-			new PersonStoreImpl(Providers.of(session));
+			new PersonStoreCassandra(Providers.of(session));
 	
 	@BeforeClass
 	public static void setup() {
-		System.setProperty("crudmicroservices.cassandra.keyspace", "crudmicroservices");
-		System.setProperty("crudmicroservices.cassandra.cf.person", "person");
-		System.setProperty("crudmicroservices.cassandra.cf.personbyname", "person_by_name");
+		System.setProperty("crudmicroservicesmiddle.cassandra.keyspace", "crudmicroservices");
+		System.setProperty("crudmicroservicesmiddle.cassandra.cf.person", "person");
+		System.setProperty("crudmicroservicesmiddle.cassandra.cf.personbyname", "person_by_name");
 	}
 	
-	@After
+	@Before
 	public void cleanup() {
 		session.execute("TRUNCATE crudmicroservices.person;");
+		session.execute("TRUNCATE crudmicroservices.person_by_name;");
 	}
 	
 	@Test

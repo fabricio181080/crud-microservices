@@ -6,11 +6,9 @@
     .run(runBlock);
 
   /** @ngInject */
-  function runBlock($log, $httpBackend) {
+  function runBlock($log) {
 
     $log.debug('runBlock end');
-
-    $httpBackend.whenGET(/^app\/.*/).passThrough();
   }
 
 })();

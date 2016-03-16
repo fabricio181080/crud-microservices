@@ -1,12 +1,12 @@
 package com.matera.crudmicroservices.store.impl;
 
 
-
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.datastax.driver.core.ConsistencyLevel;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
@@ -22,30 +22,31 @@ import com.netflix.config.DynamicStringProperty;
 
 import rx.Observable;
 
-public class PersonStoreImpl implements PersonStore {
-
+public class PersonStoreCassandra implements PersonStore {
 	
-	static final Logger logger = LoggerFactory.getLogger(PersonStoreImpl.class);
-	
+	static final Logger logger = LoggerFactory.getLogger(PersonStoreCassandra.class);
 	
 	private static final DynamicStringProperty KEYSPACE = 
-			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservices.cassandra.keyspace", "crudmicroservices");
+			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservicesmiddle.cassandra.keyspace", "crudmicroservices");
+	
+	private static final DynamicStringProperty CONSISTENCY_LEVEL = 
+			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservicesmiddle.cassandra.concistencylevel", "ONE");
 	
 	private static final DynamicStringProperty PERSON_COLUMN_FAMILY =
-			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservices.cassandra.cf.person", "person");
+			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservicesmiddle.cassandra.cf.person", "person");
 	
 	private static final DynamicStringProperty PERSON_BY_NAME_COLUMN_FAMILY =
-			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservices.cassandra.cf.personbyname", "person_by_name");
+			DynamicPropertyFactory.getInstance().getStringProperty("crudmicroservicesmiddle.cassandra.cf.personbyname", "person_by_name");
 	
 
 	private static final String ID = "id";
 	private static final String NAME = "name";
 	private static final String PHONE_NUMBER = "phone_number";
 	
-	@Inject
 	private final Provider<Session> session;
 	
-	public PersonStoreImpl(Provider<Session> session) {
+	@Inject
+	public PersonStoreCassandra(Provider<Session> session) {
 		this.session = session;
 	}
 	
@@ -101,7 +102,7 @@ public class PersonStoreImpl implements PersonStore {
 					.value(NAME, person.getName())
 					.value(PHONE_NUMBER, person.getPhoneNumber());
 		
-		session.get().execute(insertPerson);
+		session.get().execute(insertPerson.setConsistencyLevel(ConsistencyLevel.valueOf(CONSISTENCY_LEVEL.get())));
 		
 		logger.info("Saving {} on CF = {}", person, PERSON_BY_NAME_COLUMN_FAMILY.get());
 		final Insert insertPersonByName = 
@@ -109,8 +110,8 @@ public class PersonStoreImpl implements PersonStore {
 					.value(ID, person.getId())
 					.value(NAME, person.getName())
 					.value(PHONE_NUMBER, person.getPhoneNumber());
-		
-		session.get().execute(insertPersonByName);
+	
+		session.get().execute(insertPersonByName.setConsistencyLevel(ConsistencyLevel.valueOf(CONSISTENCY_LEVEL.get())));
 	}
 
 	/**
@@ -134,13 +135,13 @@ public class PersonStoreImpl implements PersonStore {
 		final Delete delete = QueryBuilder.delete().from(KEYSPACE.get(), PERSON_COLUMN_FAMILY.get());
 		delete.where(eq(ID, person.getId()));
 
-		session.get().execute(delete);
+		session.get().execute(delete.setConsistencyLevel(ConsistencyLevel.valueOf(CONSISTENCY_LEVEL.get())));
 		
 		logger.info("Deleting {} from CF = {}", person, PERSON_BY_NAME_COLUMN_FAMILY.get());
 		final Delete deleteByName = QueryBuilder.delete().from(KEYSPACE.get(), PERSON_BY_NAME_COLUMN_FAMILY.get());
 		deleteByName.where(eq(ID, person.getId())).and(eq(NAME, person.getName()));
 		
-		session.get().execute(deleteByName);
+		session.get().execute(deleteByName.setConsistencyLevel(ConsistencyLevel.valueOf(CONSISTENCY_LEVEL.get())));
 	}
 
 }

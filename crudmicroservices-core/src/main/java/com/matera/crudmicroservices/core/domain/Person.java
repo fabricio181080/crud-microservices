@@ -1,5 +1,7 @@
 package com.matera.crudmicroservices.core.domain;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -12,11 +14,20 @@ import com.google.common.base.Strings;
  * @author geiser
  *
  */
-public class Person {
+public class Person implements Serializable {
 
-    private final Long id;
-    private final String name;
-    private final String phoneNumber;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -1594987066010527072L;
+
+    private Long id;
+    private String name;
+    private String phoneNumber;
+
+    public Person() {
+        // TODO Auto-generated constructor stub
+    }
 
     private Person(Long id, String name, String phoneNumber) {
         this.id = id;
