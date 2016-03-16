@@ -1,6 +1,3 @@
-/*
- * Copyright 2016, Charter Communications, All rights reserved.
- */
 package com.matera.crudmicroservices.api.rest;
 
 import static java.util.Objects.isNull;
