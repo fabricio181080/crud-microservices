@@ -20,6 +20,15 @@ public interface PersonClient {
     public Observable<Person> createPerson(Person person);
 
     /**
+     * Updates a person.
+     * 
+     * @param id The {@link Person} id to be updated
+     * @param person The {@link Person} with the updated data
+     * @return The domain representation of the updated {@link Person}
+     */
+    public Observable<Person> updatePerson(Long id, Person person);
+
+    /**
      * Removes a person.
      * 
      * @param id The {@link Person} id to be removed.

@@ -1,10 +1,16 @@
 package com.matera.crudmicroservices.api.rest;
 
-import java.io.InputStream;
+import static org.junit.Assert.assertEquals;
 
-import org.apache.commons.io.IOUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.matera.crudmicroservices.core.entities.Person;
+import com.netflix.client.http.HttpRequest;
+import com.netflix.client.http.HttpRequest.Verb;
+import com.netflix.client.http.HttpResponse;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
+import com.netflix.niws.client.http.RestClient;
+
 import org.apache.http.HttpStatus;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,14 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.matera.crudmicroservices.core.entities.Person;
-import com.netflix.client.http.HttpRequest;
-import com.netflix.client.http.HttpRequest.Verb;
-import com.netflix.hystrix.exception.HystrixRuntimeException;
-import com.netflix.client.http.HttpResponse;
-import com.netflix.niws.client.http.RestClient;
 
 import rx.Observable;
 
@@ -51,21 +49,35 @@ public class RestPersonClientTest {
     @Test
     public void createPerson() throws Exception {
 
-        String input = "";
-        try (InputStream inputStream = this.getClass().getResourceAsStream("/test-data/person.json")) {
-            input = IOUtils.toString(inputStream);
-        }
+        Person stubPerson = createStubPerson();
 
-        HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, input);
+        HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, stubPerson);
         Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
 
-        Observable<Person> responsePerson = client.createPerson(mapper.readValue(input, Person.class));
+        Observable<Person> responsePerson = client.createPerson(stubPerson);
 
         Person person = responsePerson.toBlocking().single();
 
-        Assert.assertEquals(new Long(1), person.getId());
-        Assert.assertEquals("Person Name", person.getName());
-        Assert.assertEquals("12345", person.getPhoneNumber());
+        assertEquals(new Long(1), person.getId());
+        assertEquals("Stub Person", person.getName());
+        assertEquals("12345", person.getPhoneNumber());
+    }
+
+    @Test
+    public void updatePerson() throws Exception {
+
+        Person stubPerson = createStubPerson();
+
+        HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, stubPerson);
+        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
+
+        Observable<Person> responsePerson = client.updatePerson(1L, stubPerson);
+
+        Person person = responsePerson.toBlocking().single();
+
+        assertEquals(stubPerson.getId(), person.getId());
+        assertEquals(stubPerson.getName(), person.getName());
+        assertEquals(stubPerson.getPhoneNumber(), person.getPhoneNumber());
     }
 
     @Test
@@ -79,8 +91,8 @@ public class RestPersonClientTest {
         ArgumentCaptor<HttpRequest> requestCaptor = ArgumentCaptor.forClass(HttpRequest.class);
         Mockito.verify(restClient).execute(requestCaptor.capture());
 
-        Assert.assertEquals("crudmicroservicesmiddle/person/1", requestCaptor.getValue().getUri().toString());
-        Assert.assertEquals(Verb.DELETE, requestCaptor.getValue().getVerb());
+        assertEquals("crudmicroservicesmiddle/person/1", requestCaptor.getValue().getUri().toString());
+        assertEquals(Verb.DELETE, requestCaptor.getValue().getVerb());
     }
 
     @Test(expected = HystrixRuntimeException.class)
@@ -90,6 +102,15 @@ public class RestPersonClientTest {
             .thenReturn(HttpResponseUtils.createResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, null, false));
 
         client.removePerson(1l).toBlocking().single();
+    }
+
+    private Person createStubPerson() {
+
+        Person person = new Person();
+        person.setId(1L);
+        person.setName("Stub Person");
+        person.setPhoneNumber("12345");
+        return person;
     }
 
 }

@@ -5,19 +5,13 @@ package com.matera.crudmicroservices.api.rest;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.matera.crudmicroservices.api.PersonClient;
-import com.matera.crudmicroservices.api.command.CreatePersonCommand;
 import com.matera.crudmicroservices.api.command.CrudmicroservicesGroupKeys;
+import com.matera.crudmicroservices.api.command.PersonCreateCommand;
+import com.matera.crudmicroservices.api.command.PersonUpdateCommand;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.netflix.client.ClientException;
 import com.netflix.client.http.HttpRequest;
@@ -28,6 +22,13 @@ import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommand.Setter;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.niws.client.http.RestClient;
+
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import rx.Observable;
 
@@ -40,7 +41,7 @@ import rx.Observable;
 public class RestPersonClient implements PersonClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestPersonClient.class);
-    
+
     private static final String DEFAULT_DELETE_PERSON_URL = "crudmicroservicesmiddle/person/{id}";
     private static final String DELETE_PERSON_URL = "crudmicroservices.person.delete.url";
 
@@ -60,7 +61,15 @@ public class RestPersonClient implements PersonClient {
     public Observable<Person> createPerson(Person person) {
 
         checkNotNull(person, "Person musn't be null");
-        return new CreatePersonCommand(mapper, restClient, person).observe();
+        return new PersonCreateCommand(mapper, restClient, person).observe();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Observable<Person> updatePerson(Long id, Person person) {
+
+        return new PersonUpdateCommand(mapper, restClient, id, person).observe();
     }
 
     /**
