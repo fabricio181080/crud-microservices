@@ -27,4 +27,13 @@ public interface PersonClient {
      * @return The domain representation of the updated {@link Person}
      */
     public Observable<Person> updatePerson(Long id, Person person);
+
+    /**
+     * Removes a person.
+     * 
+     * @param id The {@link Person} id to be removed.
+     * @return 
+     * 
+     */
+    Observable<Void> removePerson(Long id);
 }

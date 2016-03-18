@@ -32,12 +32,26 @@ public class HttpResponseUtils {
      */
     public static HttpResponse createResponse(final int status, final Object entity) {
 
+        return createResponse(status, entity, true);
+    }
+
+    /**
+     * Create an HttpResponse using status and entity. Entity can be null.
+     * 
+     * @param status
+     * @param entity
+     * @param isSuccess
+     * 
+     * @return HttpResponse
+     */
+    public static HttpResponse createResponse(final int status, final Object entity, final boolean isSuccess) {
+
         return new HttpResponse() {
 
             @Override
             public boolean isSuccess() {
 
-                return true;
+                return isSuccess;
             }
 
             @Override

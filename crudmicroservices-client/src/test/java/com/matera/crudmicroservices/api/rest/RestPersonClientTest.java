@@ -5,13 +5,16 @@ import static org.junit.Assert.assertEquals;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.netflix.client.http.HttpRequest;
+import com.netflix.client.http.HttpRequest.Verb;
 import com.netflix.client.http.HttpResponse;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.netflix.niws.client.http.RestClient;
 
 import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -30,12 +33,16 @@ public class RestPersonClientTest {
     @Mock
     private RestClient restClient;
 
+    private ObjectMapper mapper;
+
     @InjectMocks
-    RestPersonClient client = new RestPersonClient(restClient, new ObjectMapper());
+    RestPersonClient client;
 
     @Before
     public void setUp() {
 
+        mapper = new ObjectMapper();
+        client = new RestPersonClient(restClient, mapper);
         System.setProperty("hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds", "300000");
     }
 
@@ -51,9 +58,9 @@ public class RestPersonClientTest {
 
         Person person = responsePerson.toBlocking().single();
 
-        assertEquals(stubPerson.getId(), person.getId());
-        assertEquals(stubPerson.getName(), person.getName());
-        assertEquals(stubPerson.getPhoneNumber(), person.getPhoneNumber());
+        assertEquals(new Long(1), person.getId());
+        assertEquals("Stub Person", person.getName());
+        assertEquals("12345", person.getPhoneNumber());
     }
 
     @Test
@@ -71,6 +78,30 @@ public class RestPersonClientTest {
         assertEquals(stubPerson.getId(), person.getId());
         assertEquals(stubPerson.getName(), person.getName());
         assertEquals(stubPerson.getPhoneNumber(), person.getPhoneNumber());
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+
+        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class)))
+            .thenReturn(HttpResponseUtils.createResponse(HttpStatus.SC_NO_CONTENT, null));
+
+        client.removePerson(1l).toBlocking().single();
+
+        ArgumentCaptor<HttpRequest> requestCaptor = ArgumentCaptor.forClass(HttpRequest.class);
+        Mockito.verify(restClient).execute(requestCaptor.capture());
+
+        assertEquals("crudmicroservicesmiddle/person/1", requestCaptor.getValue().getUri().toString());
+        assertEquals(Verb.DELETE, requestCaptor.getValue().getVerb());
+    }
+
+    @Test(expected = HystrixRuntimeException.class)
+    public void testWithErrorResponse() throws Exception {
+
+        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class)))
+            .thenReturn(HttpResponseUtils.createResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, null, false));
+
+        client.removePerson(1l).toBlocking().single();
     }
 
     private Person createStubPerson() {
