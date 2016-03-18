@@ -65,4 +65,24 @@ public class RestPersonClientTest {
         Assert.assertEquals("12345", person.getPhoneNumber());
     }
 
+    @Test
+    public void findAllPersons() throws Exception {
+
+        String input = "";
+        try (InputStream inputStream = this.getClass().getResourceAsStream("/test-data/person.json")) {
+            input = IOUtils.toString(inputStream);
+        }
+
+        HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, input);
+        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
+
+        Observable<Person> responsePerson = client.createPerson(mapper.readValue(input, Person.class));
+
+        Person person = responsePerson.toBlocking().single();
+
+        Assert.assertEquals(new Long(1), person.getId());
+        Assert.assertEquals("Person Name", person.getName());
+        Assert.assertEquals("12345", person.getPhoneNumber());
+    }
+
 }
