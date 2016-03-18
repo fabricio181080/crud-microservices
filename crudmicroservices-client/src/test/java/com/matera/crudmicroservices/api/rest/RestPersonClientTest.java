@@ -10,6 +10,9 @@ import com.netflix.client.http.HttpResponse;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.netflix.niws.client.http.RestClient;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,6 +107,24 @@ public class RestPersonClientTest {
         client.removePerson(1l).toBlocking().single();
     }
 
+    @Test
+    public void findAllPersons() throws Exception {
+
+        Person stubPerson = createStubPerson();
+
+        HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, Arrays.asList(stubPerson));
+
+        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
+
+        Observable<List<Person>> responsePerson = client.all(null, null);
+
+        Person person = responsePerson.toBlocking().single().get(0);
+
+        assertEquals(new Long(1), person.getId());
+        assertEquals("Stub Person", person.getName());
+        assertEquals("12345", person.getPhoneNumber());
+    }
+
     private Person createStubPerson() {
 
         Person person = new Person();
@@ -111,26 +132,6 @@ public class RestPersonClientTest {
         person.setName("Stub Person");
         person.setPhoneNumber("12345");
         return person;
-    }
-
-    @Test
-    public void findAllPersons() throws Exception {
-
-        String input = "";
-        try (InputStream inputStream = this.getClass().getResourceAsStream("/test-data/person.json")) {
-            input = IOUtils.toString(inputStream);
-        }
-
-        HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, input);
-        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
-
-        Observable<Person> responsePerson = client.createPerson(mapper.readValue(input, Person.class));
-
-        Person person = responsePerson.toBlocking().single();
-
-        Assert.assertEquals(new Long(1), person.getId());
-        Assert.assertEquals("Person Name", person.getName());
-        Assert.assertEquals("12345", person.getPhoneNumber());
     }
 
 }

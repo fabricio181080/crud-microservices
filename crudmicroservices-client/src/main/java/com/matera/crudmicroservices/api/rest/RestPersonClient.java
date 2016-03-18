@@ -6,7 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.matera.crudmicroservices.api.PersonClient;
-import com.matera.crudmicroservices.api.command.CreatePersonCommand;
+import com.matera.crudmicroservices.api.command.FindAllPersonsCommand;
+import com.matera.crudmicroservices.api.command.FindPersonByIdCommand;
+import com.matera.crudmicroservices.api.command.PersonCreateCommand;
+import com.matera.crudmicroservices.api.command.PersonUpdateCommand;
+import com.matera.crudmicroservices.config.CrudmicroservicesGroupKeys;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.netflix.client.ClientException;
 import com.netflix.client.http.HttpRequest;
@@ -18,6 +22,8 @@ import com.netflix.hystrix.HystrixCommand.Setter;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.niws.client.http.RestClient;
 
+import java.util.List;
+
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
@@ -25,7 +31,6 @@ import javax.ws.rs.core.UriBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import rx.Observable;
 
 /**
@@ -74,7 +79,7 @@ public class RestPersonClient implements PersonClient {
     public Observable<Person> createPerson(Person person) {
 
         checkNotNull(person, "Person musn't be null");
-        return new CreatePersonCommand(mapper, restClient, person).observe();
+        return new PersonCreateCommand(mapper, restClient, person).observe();
     }
 
     /**

@@ -52,8 +52,6 @@ public interface PersonClient {
      * Removes a person.
      * 
      * @param id The {@link Person} id to be removed.
-     * @return 
-     * 
      */
-    Observable<Void> removePerson(Long id);
+    public Observable<Void> removePerson(Long id);
 }
