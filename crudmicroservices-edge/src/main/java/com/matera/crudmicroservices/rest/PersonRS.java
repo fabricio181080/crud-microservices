@@ -1,4 +1,9 @@
-package com.matera.crudmicroservices.edge.rest;
+package com.matera.crudmicroservices.rest;
+
+import com.google.inject.Inject;
+import com.matera.crudmicroservices.filter.PersonFilter;
+import com.matera.crudmicroservices.service.PersonService;
+import com.sun.jersey.api.core.InjectParam;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -8,11 +13,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import com.google.inject.Inject;
-import com.matera.crudmicroservices.edge.rest.filter.PersonFilter;
-import com.matera.crudmicroservices.edge.service.PersonService;
-import com.sun.jersey.api.core.InjectParam;
 
 /**
  * Handle the endpoints for Person
@@ -39,13 +39,12 @@ public class PersonRS {
 	 * Returns a list of person. It can be filtered by <code>name</code>.
 	 * 
 	 * @param filter
-	 * @return
 	 */
 	@GET
-	public Response getPersonsList(@InjectParam PersonFilter filter) {
-		List<?> persons = service.getPersonsList(filter).toBlocking().single();
+	public Response getPersons(@InjectParam PersonFilter filter) {
+		List<?> peopleList = service.getPersons(filter).toBlocking().single();
 		
-		return Response.ok(persons).build();
+		return Response.ok(peopleList).build();
 	}
 
 	/**
@@ -53,13 +52,12 @@ public class PersonRS {
 	 * Returns <code>404</code> if there is no person for this <code>id</code>.
 	 * 
 	 * @param id
-	 * @return
 	 */
 	@GET
 	@Path("/{id}")
 	public Response getPerson(@PathParam("id") Long id) {
 		try{
-			Object person = service.getPersons(id).toBlocking().single();
+			Object person = service.getPerson(id).toBlocking().single();
 		
 			return Response.ok(person).build();
 			
@@ -67,5 +65,4 @@ public class PersonRS {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 	}
-
 }
