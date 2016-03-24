@@ -1,4 +1,4 @@
-package com.matera.crudmicroservices.edge.rest.filter;
+package com.matera.crudmicroservices.filter;
 
 import javax.ws.rs.QueryParam;
 
