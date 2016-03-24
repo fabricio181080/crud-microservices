@@ -18,7 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Lists;
-import com.matera.crudmicroservices.core.domain.Person;
+import com.matera.crudmicroservices.core.entities.Person;
 import com.matera.crudmicroservices.edge.rest.filter.PersonFilter;
 import com.matera.crudmicroservices.edge.service.PersonServiceImpl;
 
@@ -96,11 +96,10 @@ public class PersonRSTest {
 	 * @return
 	 */
 	private Person createPerson() {
-		Person fakePerson = new Person.Builder()
-								.withId(1L)
-								.withName("Jose")
-								.withPhoneNumber("99999-4444")
-							.build();
-		return fakePerson;
+		Person p = new Person();
+		p.setId(1L);
+		p.setName("Jose");
+		p.setPhoneNumber("98888-5555");
+		return p;
 	}
 }

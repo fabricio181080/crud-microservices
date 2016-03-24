@@ -16,7 +16,7 @@
 			<organization>MATERA Systems</organization>
 		</developer>
 	</developers>
-	
+
 	<properties>
 		<tomcat.port>9080</tomcat.port>
 	</properties>
@@ -25,6 +25,12 @@
 		<dependency>
 			<groupId>matera</groupId>
 			<artifactId>crudmicroservices-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>matera</groupId>
+			<artifactId>crudmicroservices-client</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
@@ -141,7 +147,7 @@
 								<phase>pre-integration-test</phase>
 								<configuration>
 									<fork>true</fork>
-									<path>/crudmicroservices</path>
+									<path>/crudmicroservicesedge</path>
 									<port>${tomcat.port}</port>
 									<update>true</update>
 									<systemProperties>
@@ -177,8 +183,8 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>	
-	
+		</profile>
+
 		<profile>
 			<id>travis-integration-test</id>
 			<activation>
@@ -202,7 +208,7 @@
 								<phase>pre-integration-test</phase>
 								<configuration>
 									<fork>true</fork>
-									<path>/crudmicroservices</path>
+									<path>/crudmicroservicesedge</path>
 									<port>${tomcat.port}</port>
 									<update>true</update>
 									<systemProperties>
@@ -245,12 +251,33 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<warName>crudmicroservicesedge</warName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.2</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.15</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -266,6 +293,13 @@
 				<groupId>org.apache.tomcat.maven</groupId>
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.0</version>
+				<configuration>
+					<port>${tomcat.port}</port>
+					<systemProperties>
+						<archaius.deployment.environment>local</archaius.deployment.environment>
+					</systemProperties>
+					<path>/crudmicroservicesedge</path>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

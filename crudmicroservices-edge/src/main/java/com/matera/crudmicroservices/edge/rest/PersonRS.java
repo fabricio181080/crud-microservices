@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
-import com.matera.crudmicroservices.core.domain.Person;
+import com.matera.crudmicroservices.core.entities.Person;
 import com.matera.crudmicroservices.edge.rest.filter.PersonFilter;
 import com.matera.crudmicroservices.edge.service.PersonService;
 import com.sun.jersey.api.core.InjectParam;
@@ -31,7 +31,7 @@ import rx.Observable;
  * @author Igor K. Shiohara
  *
  */
-@Path("/services/v1/persons")
+@Path("/services/v1/person")
 public class PersonRS {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersonRS.class);

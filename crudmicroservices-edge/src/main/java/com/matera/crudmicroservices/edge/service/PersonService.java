@@ -2,7 +2,7 @@ package com.matera.crudmicroservices.edge.service;
 
 import java.util.List;
 
-import com.matera.crudmicroservices.core.domain.Person;
+import com.matera.crudmicroservices.core.entities.Person;
 import com.matera.crudmicroservices.edge.rest.filter.PersonFilter;
 
 import rx.Observable;
