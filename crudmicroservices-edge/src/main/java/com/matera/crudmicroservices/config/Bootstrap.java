@@ -9,5 +9,6 @@ public class Bootstrap extends ServerBootstrap {
 	protected void configureBinder(Binder binder) {
 		
 		binder.install(new RestModule());
+		binder.install(new LocalRestCrudMicroservicesClientModule());
 	}
 }

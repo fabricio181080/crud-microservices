@@ -1,6 +1,8 @@
 package com.matera.crudmicroservices.service;
 
 import com.google.inject.Inject;
+import com.matera.crudmicroservices.api.PersonClient;
+import com.matera.crudmicroservices.core.entities.Person;
 import com.matera.crudmicroservices.filter.PersonFilter;
 
 import java.util.List;
@@ -16,13 +18,15 @@ import rx.Observable;
  */
 public class PersonService {
 
+    private final PersonClient personClient;
+
     /**
      * Constructor with all arguments
-     * 
      */
     @Inject
-    public PersonService() {
+    public PersonService(PersonClient personClient) {
 
+        this.personClient = personClient;
     }
 
     /**
@@ -43,5 +47,16 @@ public class PersonService {
     public Observable<Object> getPerson(Long id) {
 
         throw new NotImplementedException("Not yet");
+    }
+
+    /**
+     * @param person
+     * @return Observable&lt;
+     *         {@link com.matera.crudmicroservices.core.entities.Person Person}
+     *         &gt;
+     */
+    public Observable<Person> createPerson(Person person) {
+
+        return personClient.createPerson(person);
     }
 }
