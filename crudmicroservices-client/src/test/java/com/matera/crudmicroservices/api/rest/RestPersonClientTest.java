@@ -10,6 +10,9 @@ import com.netflix.client.http.HttpResponse;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.netflix.niws.client.http.RestClient;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,6 +105,24 @@ public class RestPersonClientTest {
             .thenReturn(HttpResponseUtils.createResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, null, false));
 
         client.removePerson(1l).toBlocking().single();
+    }
+
+    @Test
+    public void findAllPersons() throws Exception {
+
+        Person stubPerson = createStubPerson();
+
+        HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, Arrays.asList(stubPerson));
+
+        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
+
+        Observable<List<Person>> responsePerson = client.all(null, null);
+
+        Person person = responsePerson.toBlocking().single().get(0);
+
+        assertEquals(new Long(1), person.getId());
+        assertEquals("Stub Person", person.getName());
+        assertEquals("12345", person.getPhoneNumber());
     }
 
     private Person createStubPerson() {

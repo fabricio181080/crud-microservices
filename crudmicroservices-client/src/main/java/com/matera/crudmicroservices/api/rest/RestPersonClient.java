@@ -1,6 +1,3 @@
-/*
- * Copyright 2016, Charter Communications, All rights reserved.
- */
 package com.matera.crudmicroservices.api.rest;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -9,9 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.matera.crudmicroservices.api.PersonClient;
-import com.matera.crudmicroservices.api.command.CrudmicroservicesGroupKeys;
+import com.matera.crudmicroservices.api.command.FindAllPersonsCommand;
+import com.matera.crudmicroservices.api.command.FindPersonByIdCommand;
 import com.matera.crudmicroservices.api.command.PersonCreateCommand;
 import com.matera.crudmicroservices.api.command.PersonUpdateCommand;
+import com.matera.crudmicroservices.config.CrudmicroservicesGroupKeys;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.netflix.client.ClientException;
 import com.netflix.client.http.HttpRequest;
@@ -23,6 +22,8 @@ import com.netflix.hystrix.HystrixCommand.Setter;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.niws.client.http.RestClient;
 
+import java.util.List;
+
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
@@ -33,7 +34,7 @@ import org.slf4j.LoggerFactory;
 import rx.Observable;
 
 /**
- * 
+ * Client Rest implementation to handle middle responses
  *
  * @author egzefer
  * @author geiser
@@ -53,6 +54,23 @@ public class RestPersonClient implements PersonClient {
 
         this.restClient = restClient;
         this.mapper = mapper;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Observable<List<Person>> all(String name, String phoneNumber) {
+
+        return new FindAllPersonsCommand(mapper, restClient, name, phoneNumber).observe();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Observable<Person> byId(Long id) {
+
+        checkNotNull(id, "The given id musn't be null");
+        return new FindPersonByIdCommand(mapper, restClient, id).observe();
     }
 
     /**
