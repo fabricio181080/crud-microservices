@@ -1,4 +1,9 @@
-package com.matera.crudmicroservices.edge.rest;
+package com.matera.crudmicroservices.rest;
+
+import com.google.common.collect.Lists;
+import com.matera.crudmicroservices.core.entities.Person;
+import com.matera.crudmicroservices.filter.PersonFilter;
+import com.matera.crudmicroservices.service.PersonService;
 
 import java.util.List;
 
@@ -12,11 +17,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import com.google.common.collect.Lists;
-import com.matera.crudmicroservices.core.domain.Person;
-import com.matera.crudmicroservices.edge.rest.filter.PersonFilter;
-import com.matera.crudmicroservices.edge.service.PersonService;
 
 import rx.Observable;
 
@@ -33,7 +33,7 @@ public class PersonRSTest {
 	}
 
 	/**
-	 * Test if {@link PersonRS#getPersonList(PersonFilter)} will call its service
+	 * Test if {@link PersonRS#getPersons(PersonFilter)} will call its service
 	 * and 'open' the {@link Observable}.
 	 */
 	@Test
@@ -42,9 +42,9 @@ public class PersonRSTest {
 		PersonFilter filter = new PersonFilter();
 		Observable<List<Person>> observable = Observable.just(Lists.newArrayList(fakePerson));
 		
-		Mockito.when(service.getPersonList(filter)).thenReturn(observable);
+		Mockito.when(service.getPersons(filter)).thenReturn(observable);
 		
-		Response response = personRS.getPersonList(filter);
+		Response response = personRS.getPersons(filter);
 		Assert.assertNotNull(response.getEntity());
 		
 		@SuppressWarnings("unchecked")
@@ -52,7 +52,7 @@ public class PersonRSTest {
 		Assert.assertEquals(1, persons.size());
 		Assert.assertEquals(fakePerson, persons.get(0));
 		
-		Mockito.verify(service, Mockito.only()).getPersonList(filter);
+		Mockito.verify(service, Mockito.only()).getPersons(filter);
 	}
 	
 	/**

@@ -1,6 +1,7 @@
 package com.matera.crudmicroservices.api.command;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.matera.crudmicroservices.config.CrudmicroservicesGroupKeys;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.netflix.client.http.HttpRequest;
 import com.netflix.client.http.HttpRequest.Verb;
@@ -15,17 +16,18 @@ import java.net.URI;
 import javax.ws.rs.core.UriBuilder;
 
 /**
- * 
+ * Hystrix command to create a Person
+ *
+ * @author egzefer
  */
-public class CreatePersonCommand extends HystrixCommand<Person> {
+public class PersonCreateCommand extends HystrixCommand<Person> {
 
-    private static final HystrixCommand.Setter CREATE_PERSON_SETTER =
-        Setter.withGroupKey(CrudmicroservicesGroupKeys.MIDDLE)
-            .andCommandKey(HystrixCommandKey.Factory.asKey(CreatePersonCommand.class.getName()));
+    private static final HystrixCommand.Setter SETTER = Setter.withGroupKey(CrudmicroservicesGroupKeys.MIDDLE)
+        .andCommandKey(HystrixCommandKey.Factory.asKey(PersonCreateCommand.class.getName()));
 
-    public static final String DEFAULT_CREATE_PERSON_URL = "crudmicroservicesmiddle/person";
+    public static final String DEFAULT_URL = "crudmicroservicesmiddle/person";
 
-    public static final String CREATE_PERSON_URL = "crudmicroservices.person.create.url";
+    public static final String URL = "crudmicroservices.person.create.url";
 
     private ObjectMapper mapper;
 
@@ -33,9 +35,9 @@ public class CreatePersonCommand extends HystrixCommand<Person> {
 
     private Person person;
 
-    public CreatePersonCommand(ObjectMapper mapper, final RestClient restClient, Person person) {
+    public PersonCreateCommand(ObjectMapper mapper, final RestClient restClient, Person person) {
 
-        super(CREATE_PERSON_SETTER);
+        super(SETTER);
         this.mapper = mapper;
 
         this.restClient = restClient;
@@ -45,10 +47,9 @@ public class CreatePersonCommand extends HystrixCommand<Person> {
     @Override
     protected Person run() throws Exception {
 
-        String createPersonURL =
-            DynamicPropertyFactory.getInstance().getStringProperty(CREATE_PERSON_URL, DEFAULT_CREATE_PERSON_URL).get();
+        String personCreateURL = DynamicPropertyFactory.getInstance().getStringProperty(URL, DEFAULT_URL).get();
 
-        URI URI = UriBuilder.fromPath(createPersonURL).build();
+        URI URI = UriBuilder.fromPath(personCreateURL).build();
 
         HttpRequest request = HttpRequest.newBuilder().verb(Verb.POST).uri(URI).entity(person).build();
 
