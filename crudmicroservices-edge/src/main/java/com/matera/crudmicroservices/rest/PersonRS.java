@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -79,5 +80,20 @@ public class PersonRS {
     public Response createPerson(Person person) {
 
         return Response.status(Status.CREATED).entity(service.createPerson(person).toBlocking().single()).build();
+    }
+
+    /**
+     * Updates a {@link Person}
+     * 
+     * @param id
+     * @param person
+     * @return Response
+     */
+    @PUT
+    @Path("/{id}")
+    public Response updatePerson(@PathParam("id") Long id, Person person) {
+
+        Person newPerson = service.updatePerson(id, person).toBlocking().single();
+        return Response.ok(newPerson).build();
     }
 }

@@ -57,4 +57,16 @@ public class PersonService {
 
         return personClient.createPerson(person);
     }
+
+    /**
+     * Updates a {@link Person}
+     * 
+     * @param id
+     * @param person
+     * @return
+     */
+    public Observable<Person> updatePerson(Long id, Person person) {
+
+        throw new NotImplementedException("Not yet");
+    }
 }
