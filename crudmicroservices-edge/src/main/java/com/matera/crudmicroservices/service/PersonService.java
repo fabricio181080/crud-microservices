@@ -2,6 +2,8 @@ package com.matera.crudmicroservices.service;
 
 import java.util.List;
 
+import org.apache.commons.lang.NotImplementedException;
+
 import com.google.inject.Inject;
 import com.matera.crudmicroservices.api.PersonClient;
 import com.matera.crudmicroservices.core.entities.Person;
