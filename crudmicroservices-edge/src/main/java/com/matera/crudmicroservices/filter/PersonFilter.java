@@ -4,15 +4,30 @@ import javax.ws.rs.QueryParam;
 
 public class PersonFilter {
 
-	@QueryParam("name")
-	private String name;
+    @QueryParam("name")
+    private String name;
 
-	public String getName() {
-		return name;
-	}
+    @QueryParam("phoneNumber")
+    private String phoneNumber;
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	
+    public String getName() {
+
+        return name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    public String getPhoneNumber() {
+
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+
+        this.phoneNumber = phoneNumber;
+    }
+
 }

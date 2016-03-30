@@ -1,11 +1,5 @@
 package com.matera.crudmicroservices.rest;
 
-import com.google.inject.Inject;
-import com.matera.crudmicroservices.core.entities.Person;
-import com.matera.crudmicroservices.filter.PersonFilter;
-import com.matera.crudmicroservices.service.PersonService;
-import com.sun.jersey.api.core.InjectParam;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -18,6 +12,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import com.google.inject.Inject;
+import com.matera.crudmicroservices.core.entities.Person;
+import com.matera.crudmicroservices.filter.PersonFilter;
+import com.matera.crudmicroservices.service.PersonService;
+import com.sun.jersey.api.core.InjectParam;
 
 /**
  * Handle the endpoints for Person
@@ -47,10 +47,10 @@ public class PersonRS {
      * @param filter
      */
     @GET
+    @Produces({ MediaType.APPLICATION_JSON })
     public Response getPersons(@InjectParam PersonFilter filter) {
 
-        List<?> peopleList = service.getPersons(filter).toBlocking().single();
-
+        List<Person> peopleList = service.getPersons(filter).toBlocking().single();
         return Response.ok(peopleList).build();
     }
 
@@ -62,13 +62,12 @@ public class PersonRS {
      */
     @GET
     @Path("/{id}")
+    @Produces({ MediaType.APPLICATION_JSON })
     public Response getPerson(@PathParam("id") Long id) {
 
         try {
-            Object person = service.getPerson(id).toBlocking().single();
-
+            Person person = service.getPerson(id).toBlocking().single();
             return Response.ok(person).build();
-
         } catch (NoSuchElementException e) {
             return Response.status(Status.NOT_FOUND).build();
         }

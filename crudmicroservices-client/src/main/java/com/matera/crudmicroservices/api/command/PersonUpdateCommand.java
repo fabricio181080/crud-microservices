@@ -26,7 +26,7 @@ public class PersonUpdateCommand extends HystrixCommand<Person> {
         Setter.withGroupKey(CrudmicroservicesGroupKeys.MIDDLE)
             .andCommandKey(HystrixCommandKey.Factory.asKey(PersonUpdateCommand.class.getName()));
 
-    public static final String DEFAULT_PERSON_UPDATE_URL = "crudmicroservicesmiddle/person/{id}";
+    public static final String DEFAULT_PERSON_UPDATE_URL = "/crudmicroservicesmiddle/person/{id}";
 
     public static final String PERSON_UPDATE_URL = "crudmicroservices.person.update.url";
 
@@ -57,7 +57,7 @@ public class PersonUpdateCommand extends HystrixCommand<Person> {
 
         HttpRequest request = HttpRequest.newBuilder().verb(Verb.PUT).uri(URI).entity(person).build();
 
-        try (HttpResponse response = restClient.execute(request)) {
+        try (HttpResponse response = restClient.executeWithLoadBalancer(request)) {
             return mapper.readValue(response.getInputStream(), Person.class);
         }
     }

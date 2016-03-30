@@ -2,6 +2,7 @@ package com.matera.crudmicroservices.api.command;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import com.matera.crudmicroservices.config.CrudmicroservicesGroupKeys;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.netflix.client.http.HttpRequest;
@@ -28,7 +29,7 @@ public class FindAllPersonsCommand extends HystrixCommand<List<Person>> {
     private static final HystrixCommand.Setter SETTER = Setter.withGroupKey(CrudmicroservicesGroupKeys.MIDDLE)
         .andCommandKey(HystrixCommandKey.Factory.asKey(FindAllPersonsCommand.class.getName()));
 
-    public static final String DEFAULT_URL = "crudmicroservicesmiddle/person/all";
+    public static final String DEFAULT_URL = "/crudmicroservicesmiddle/person/all";
 
     public static final String URL = "crudmicroservices.person.findall.url";
 
@@ -44,7 +45,6 @@ public class FindAllPersonsCommand extends HystrixCommand<List<Person>> {
 
         super(SETTER);
         this.mapper = mapper;
-
         this.restClient = restClient;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -54,12 +54,18 @@ public class FindAllPersonsCommand extends HystrixCommand<List<Person>> {
     protected List<Person> run() throws Exception {
 
         String findAllPersonsURL = DynamicPropertyFactory.getInstance().getStringProperty(URL, DEFAULT_URL).get();
+        UriBuilder builder = UriBuilder.fromPath(findAllPersonsURL);
+        
+        if (!Strings.isNullOrEmpty(name)) {
+            builder.queryParam("name", name);
+        }
+        if (!Strings.isNullOrEmpty(phoneNumber)) {
+            builder.queryParam("phoneNumber", phoneNumber);
+        }
 
-        URI URI = UriBuilder.fromPath(findAllPersonsURL).build(name, phoneNumber);
+        HttpRequest request = HttpRequest.newBuilder().verb(Verb.GET).uri(builder.build()).build();
 
-        HttpRequest request = HttpRequest.newBuilder().verb(Verb.GET).uri(URI).build();
-
-        try (HttpResponse response = restClient.execute(request)) {
+        try (HttpResponse response = restClient.executeWithLoadBalancer(request)) {
             return mapper.readValue(response.getInputStream(), new TypeReference<List<Person>>() {
             });
         }

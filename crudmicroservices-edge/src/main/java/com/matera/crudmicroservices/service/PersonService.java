@@ -1,13 +1,11 @@
 package com.matera.crudmicroservices.service;
 
+import java.util.List;
+
 import com.google.inject.Inject;
 import com.matera.crudmicroservices.api.PersonClient;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.matera.crudmicroservices.filter.PersonFilter;
-
-import java.util.List;
-
-import org.apache.commons.lang.NotImplementedException;
 
 import rx.Observable;
 
@@ -34,9 +32,9 @@ public class PersonService {
      * 
      * @param filter
      */
-    public Observable<List<?>> getPersons(PersonFilter filter) {
+    public Observable<List<Person>> getPersons(PersonFilter filter) {
 
-        throw new NotImplementedException("Not yet");
+        return personClient.all(filter.getName(), filter.getPhoneNumber());
     }
 
     /**
@@ -44,9 +42,9 @@ public class PersonService {
      * 
      * @param id
      */
-    public Observable<Object> getPerson(Long id) {
+    public Observable<Person> getPerson(Long id) {
 
-        throw new NotImplementedException("Not yet");
+        return personClient.byId(id);
     }
 
     /**
