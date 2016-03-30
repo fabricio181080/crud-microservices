@@ -34,7 +34,7 @@ public class PersonService {
      * 
      * @param filter
      */
-    public Observable<List<?>> getPersons(PersonFilter filter) {
+    public Observable<List<Person>> getPersons(PersonFilter filter) {
 
         throw new NotImplementedException("Not yet");
     }
@@ -44,7 +44,7 @@ public class PersonService {
      * 
      * @param id
      */
-    public Observable<Object> getPerson(Long id) {
+    public Observable<Person> getPerson(Long id) {
 
         throw new NotImplementedException("Not yet");
     }
@@ -58,5 +58,17 @@ public class PersonService {
     public Observable<Person> createPerson(Person person) {
 
         return personClient.createPerson(person);
+    }
+
+    /**
+     * Updates a {@link Person}
+     * 
+     * @param id
+     * @param person
+     * @return
+     */
+    public Observable<Person> updatePerson(Long id, Person person) {
+
+        throw new NotImplementedException("Not yet");
     }
 }
