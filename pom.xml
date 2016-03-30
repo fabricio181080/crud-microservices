@@ -34,7 +34,6 @@
   	<module>crudmicroservices-middle</module>
   	<module>crudmicroservices-core</module>
   	<module>crudmicroservices-edge</module>
-  	<module>crudmicroservices-ui</module>
   </modules>
   
   	<build>

@@ -38,7 +38,6 @@ public class RestPersonClientTest {
 
     private ObjectMapper mapper;
 
-    @InjectMocks
     RestPersonClient client;
 
     @Before
@@ -55,7 +54,7 @@ public class RestPersonClientTest {
         Person stubPerson = createStubPerson();
 
         HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, stubPerson);
-        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
+        Mockito.when(restClient.executeWithLoadBalancer(Mockito.any(HttpRequest.class))).thenReturn(response);
 
         Observable<Person> responsePerson = client.createPerson(stubPerson);
 
@@ -72,7 +71,7 @@ public class RestPersonClientTest {
         Person stubPerson = createStubPerson();
 
         HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, stubPerson);
-        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
+        Mockito.when(restClient.executeWithLoadBalancer(Mockito.any(HttpRequest.class))).thenReturn(response);
 
         Observable<Person> responsePerson = client.updatePerson(1L, stubPerson);
 
@@ -86,22 +85,22 @@ public class RestPersonClientTest {
     @Test
     public void testDelete() throws Exception {
 
-        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class)))
+        Mockito.when(restClient.executeWithLoadBalancer(Mockito.any(HttpRequest.class)))
             .thenReturn(HttpResponseUtils.createResponse(HttpStatus.SC_NO_CONTENT, null));
 
         client.removePerson(1l).toBlocking().single();
 
         ArgumentCaptor<HttpRequest> requestCaptor = ArgumentCaptor.forClass(HttpRequest.class);
-        Mockito.verify(restClient).execute(requestCaptor.capture());
+        Mockito.verify(restClient).executeWithLoadBalancer(requestCaptor.capture());
 
-        assertEquals("crudmicroservicesmiddle/person/1", requestCaptor.getValue().getUri().toString());
+        assertEquals("/crudmicroservicesmiddle/person/1", requestCaptor.getValue().getUri().toString());
         assertEquals(Verb.DELETE, requestCaptor.getValue().getVerb());
     }
 
     @Test(expected = HystrixRuntimeException.class)
     public void testWithErrorResponse() throws Exception {
 
-        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class)))
+        Mockito.when(restClient.executeWithLoadBalancer(Mockito.any(HttpRequest.class)))
             .thenReturn(HttpResponseUtils.createResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, null, false));
 
         client.removePerson(1l).toBlocking().single();
@@ -114,7 +113,7 @@ public class RestPersonClientTest {
 
         HttpResponse response = HttpResponseUtils.createResponse(HttpStatus.SC_OK, Arrays.asList(stubPerson));
 
-        Mockito.when(restClient.execute(Mockito.any(HttpRequest.class))).thenReturn(response);
+        Mockito.when(restClient.executeWithLoadBalancer(Mockito.any(HttpRequest.class))).thenReturn(response);
 
         Observable<List<Person>> responsePerson = client.all(null, null);
 
