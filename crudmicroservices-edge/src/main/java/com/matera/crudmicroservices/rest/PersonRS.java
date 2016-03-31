@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -95,5 +96,21 @@ public class PersonRS {
 
         Person newPerson = service.updatePerson(id, person).toBlocking().single();
         return Response.ok(newPerson).build();
+    }
+    
+    /**
+     * Remove a {@link Person}
+     * 
+     * @param id
+     * @param person
+     * @return Response
+     */
+    @DELETE
+    @Path("/{id}")
+    @Produces({ MediaType.APPLICATION_JSON })
+    public Response removePerson(@PathParam("id") Long id, Person person) {
+
+        service.removePerson(id, person).toBlocking().single();
+        return Response.status(Status.NO_CONTENT).build();
     }
 }
