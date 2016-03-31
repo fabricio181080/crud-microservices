@@ -71,4 +71,16 @@ public class PersonService {
 
         throw new NotImplementedException("Not yet");
     }
+    
+    /**
+     * Remove a {@link Person}
+     * 
+     * @param id
+     * @param person
+     * @return
+     */
+    public Observable<Void> removePerson(Long id, Person person) {
+
+        return personClient.removePerson(id);
+    }
 }
