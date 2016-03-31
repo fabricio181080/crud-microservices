@@ -1,13 +1,11 @@
 package com.matera.crudmicroservices.service;
 
-import java.util.List;
-
-import org.apache.commons.lang.NotImplementedException;
-
 import com.google.inject.Inject;
 import com.matera.crudmicroservices.api.PersonClient;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.matera.crudmicroservices.filter.PersonFilter;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -63,12 +61,13 @@ public class PersonService {
     /**
      * Updates a {@link Person}
      * 
-     * @param id
-     * @param person
-     * @return
+     * @param id the id of the person being updated
+     * @param person the data to update the person
+     * @return an Observable
+     *         {@link com.matera.crudmicroservices.core.entities.Person Person}
      */
     public Observable<Person> updatePerson(Long id, Person person) {
 
-        throw new NotImplementedException("Not yet");
+        return personClient.updatePerson(id, person);
     }
 }
