@@ -4,16 +4,16 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.matera.crudmicroservices.service.PersonCacheKey.byId;
 import static com.matera.crudmicroservices.service.PersonCacheKey.byName;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.matera.crudmicroservices.cache.Cache;
 import com.matera.crudmicroservices.core.convert.PersonConverter;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.matera.crudmicroservices.store.PersonStore;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -77,7 +77,7 @@ public class PersonService {
      */
     public Observable<Person> insert(Person person) {
 
-        checkArgument(person.getId() != null, "id must not be empty");
+        //checkArgument(person.getId() != null, "id must not be empty");
         checkArgument(!Strings.isNullOrEmpty(person.getName()), "name must not be empty");
         checkArgument(personStore.findById(person.getId()).isEmpty().toBlocking().single(), "id must be unique");
 

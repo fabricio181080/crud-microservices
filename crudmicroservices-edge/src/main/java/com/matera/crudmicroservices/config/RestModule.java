@@ -1,7 +1,5 @@
 package com.matera.crudmicroservices.config;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
-import com.google.inject.Scopes;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.jersey.guice.JerseyServletModule;
@@ -13,7 +11,6 @@ public class RestModule extends JerseyServletModule {
 	protected void configureServlets() {
 		
 		bind(GuiceContainer.class);
-		bind(JacksonJaxbJsonProvider.class).in(Scopes.SINGLETON);
 		
 		final ResourceConfig rc = new PackagesResourceConfig("com.matera.crudmicroservices.rest");
 		for (Class<?> resource : rc.getClasses()) {
