@@ -12,8 +12,9 @@
 	<properties>
 		<cassandra.version>2.0.3</cassandra.version>
 		<tomcat.port>9080</tomcat.port>
-        <slf4j.version>1.7.5</slf4j.version>
-        <logback.version>1.1.6</logback.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<logback.version>1.1.6</logback.version>
+		<environment>local</environment>
 	</properties>
 
 	<dependencies>
@@ -44,17 +45,6 @@
 			<artifactId>javax.servlet</artifactId>
 			<version>2.5.0.v201103041518</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-server</artifactId>
-			<version>1.19</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-core</artifactId>
-			<version>1.19</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
@@ -105,18 +95,11 @@
 			<groupId>com.netflix.karyon</groupId>
 			<artifactId>karyon-core</artifactId>
 			<version>1.0.20</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>eureka-client</artifactId>
-					<groupId>com.netflix.eureka</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.netflix.karyon</groupId>
 			<artifactId>karyon-extensions</artifactId>
 			<version>1.0.20</version>
-			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>servlet-api</artifactId>
@@ -128,18 +111,23 @@
 			<groupId>com.netflix.karyon</groupId>
 			<artifactId>karyon-admin</artifactId>
 			<version>1.0.20</version>
-			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
-                    <artifactId>slf4j-simple</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
+					<artifactId>slf4j-simple</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>com.netflix.governator</groupId>
-			<artifactId>governator</artifactId>
-			<version>1.2.19</version>
+			<groupId>com.netflix.karyon</groupId>
+			<artifactId>karyon-admin-web</artifactId>
+			<version>1.0.20</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>javax.servlet</artifactId>
+					<groupId>org.eclipse.jetty.orbit</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.netflix.archaius</groupId>
@@ -147,9 +135,19 @@
 			<version>0.6.5</version>
 		</dependency>
 		<dependency>
+			<groupId>com.netflix.ribbon</groupId>
+			<artifactId>ribbon-eureka</artifactId>
+			<version>2.1.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.netflix.governator</groupId>
+			<artifactId>governator</artifactId>
+			<version>1.2.19</version>
+		</dependency>
+		<dependency>
 			<groupId>com.netflix.hystrix</groupId>
 			<artifactId>hystrix-core</artifactId>
-			<version>1.4.23</version>
+			<version>1.4.25</version>
 		</dependency>
 		<dependency>
 			<groupId>io.reactivex</groupId>
@@ -166,21 +164,21 @@
 			<artifactId>gson</artifactId>
 			<version>2.6.1</version>
 		</dependency>
-		      <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -320,6 +318,13 @@
 				</plugins>
 			</build>
 		</profile>
+
+		<profile>
+			<id>local-eureka</id>
+			<properties>
+				<environment>local-eureka</environment>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>
@@ -381,9 +386,15 @@
 					<port>${tomcat.port}</port>
 					<useTestClasspath>false</useTestClasspath>
 					<systemProperties>
-						<archaius.deployment.environment>local</archaius.deployment.environment>
-						<application.home>${basedir}${file.separator}src${file.separator}test${file.separator}resources${file.separator}</application.home>
+						<archaius.deployment.environment>${environment}</archaius.deployment.environment>
 						<http.port>${tomcat.port}</http.port>
+						<java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
+						<com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump>true</com.sun.xml.ws.transport.http.client.HttpTransportPipe.dump>
+						<!-- Only used when profile local-eureka is active -->
+						<eureka.enableSelfPreservation>false</eureka.enableSelfPreservation>
+						<eureka.registration.enabled>true</eureka.registration.enabled>
+						<eureka.environment>local</eureka.environment>
+						<eureka.datacenter>ndc</eureka.datacenter>
 					</systemProperties>
 				</configuration>
 				<executions>
@@ -419,6 +430,4 @@
 			</resource>
 		</resources>
 	</build>
-
-
 </project>
