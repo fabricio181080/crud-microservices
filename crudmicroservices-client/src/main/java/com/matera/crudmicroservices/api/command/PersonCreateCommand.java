@@ -13,6 +13,8 @@ import com.netflix.niws.client.http.RestClient;
 
 import java.net.URI;
 
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 /**
@@ -51,7 +53,9 @@ public class PersonCreateCommand extends HystrixCommand<Person> {
 
         URI URI = UriBuilder.fromPath(personCreateURL).build();
 
-        HttpRequest request = HttpRequest.newBuilder().verb(Verb.POST).uri(URI).entity(person).build();
+        HttpRequest request =
+            HttpRequest.newBuilder().verb(Verb.POST).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .uri(URI).entity(person).build();
 
         try (HttpResponse response = restClient.executeWithLoadBalancer(request)) {
             return mapper.readValue(response.getInputStream(), Person.class);

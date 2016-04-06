@@ -1,8 +1,5 @@
 package com.matera.crudmicroservices.config;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Scopes;
@@ -28,17 +25,4 @@ public class LocalRestCrudMicroservicesClientModule extends AbstractModule {
 
         return (RestClient) ClientFactory.getNamedClient("crudmicroservicesmiddle");
     }
-
-    @Provides
-    @Singleton
-    @Named("ValidationObjectMapper")
-    public ObjectMapper getObjectMapper() {
-
-        final ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JaxbAnnotationModule());
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        return objectMapper;
-    }
-
 }
