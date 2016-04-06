@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
 import com.netflix.client.ClientException;
+import com.netflix.client.http.HttpHeaders;
 import com.netflix.client.http.HttpResponse;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Map;
@@ -79,7 +81,7 @@ public class HttpResponseUtils {
             }
 
             @Override
-            public InputStream getInputStream() throws ClientException {
+            public InputStream getInputStream() {
 
                 if (entity != null) {
 
@@ -123,6 +125,27 @@ public class HttpResponseUtils {
             @Override
             public void close() {
 
+            }
+
+            @Override
+            public <T> T getEntity(Type arg0) throws Exception {
+
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public HttpHeaders getHttpHeaders() {
+
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
+            public String getStatusLine() {
+
+                // TODO Auto-generated method stub
+                return null;
             }
         };
     }

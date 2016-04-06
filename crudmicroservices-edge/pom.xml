@@ -12,9 +12,10 @@
 	<packaging>war</packaging>
 
 	<properties>
-		<tomcat.port>8888</tomcat.port>
+		<tomcat.port>9070</tomcat.port>
 		<slf4j.version>1.7.5</slf4j.version>
 		<logback.version>1.1.6</logback.version>
+		<environment>local</environment>
 	</properties>
 
 	<dependencies>
@@ -28,7 +29,7 @@
 			<artifactId>mockito-core</artifactId>
 			<version>1.10.19</version>
 			<scope>test</scope>
-	    </dependency>
+		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
@@ -49,24 +50,13 @@
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-server</artifactId>
-			<version>1.19</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-core</artifactId>
-			<version>1.19</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-bundle</artifactId>
-			<version>1.19</version>
+			<version>1.19.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-guice</artifactId>
-			<version>1.19</version>
+			<version>1.19.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -113,7 +103,6 @@
 			<groupId>com.netflix.karyon</groupId>
 			<artifactId>karyon-extensions</artifactId>
 			<version>1.0.20</version>
-			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>servlet-api</artifactId>
@@ -125,13 +114,28 @@
 			<groupId>com.netflix.karyon</groupId>
 			<artifactId>karyon-admin</artifactId>
 			<version>1.0.20</version>
-			<scope>runtime</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-simple</artifactId>
 					<groupId>org.slf4j</groupId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.netflix.karyon</groupId>
+			<artifactId>karyon-admin-web</artifactId>
+			<version>1.0.20</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>javax.servlet</artifactId>
+					<groupId>org.eclipse.jetty.orbit</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.netflix.ribbon</groupId>
+			<artifactId>ribbon-eureka</artifactId>
+			<version>2.1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.netflix.governator</groupId>
@@ -147,11 +151,6 @@
 			<groupId>com.netflix.hystrix</groupId>
 			<artifactId>hystrix-core</artifactId>
 			<version>1.4.23</version>
-		</dependency>
-		<dependency>
-			<groupId>io.reactivex</groupId>
-			<artifactId>rxjava</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -293,6 +292,13 @@
 				</plugins>
 			</build>
 		</profile>
+
+		<profile>
+			<id>local-eureka</id>
+			<properties>
+				<environment>local-eureka</environment>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>
@@ -354,7 +360,7 @@
 					<port>${tomcat.port}</port>
 					<useTestClasspath>false</useTestClasspath>
 					<systemProperties>
-						<archaius.deployment.environment>local</archaius.deployment.environment>
+						<archaius.deployment.environment>${environment}</archaius.deployment.environment>
 						<http.port>${tomcat.port}</http.port>
 					</systemProperties>
 				</configuration>
