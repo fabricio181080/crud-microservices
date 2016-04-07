@@ -25,24 +25,20 @@ import javax.ws.rs.core.UriBuilder;
 public class PersonCreateCommand extends HystrixCommand<Person> {
 
     private static final HystrixCommand.Setter SETTER = Setter.withGroupKey(CrudmicroservicesGroupKeys.MIDDLE)
-        .andCommandKey(HystrixCommandKey.Factory.asKey(PersonCreateCommand.class.getName()));
+        .andCommandKey(HystrixCommandKey.Factory.asKey(PersonCreateCommand.class.getSimpleName()));
 
     public static final String DEFAULT_URL = "/crudmicroservicesmiddle/person";
-
     public static final String URL = "crudmicroservices.person.create.url";
 
-    private ObjectMapper mapper;
-
     private final RestClient restClient;
+    private final ObjectMapper mapper;
+    private final Person person;
 
-    private Person person;
-
-    public PersonCreateCommand(ObjectMapper mapper, final RestClient restClient, Person person) {
+    public PersonCreateCommand(final RestClient restClient, final ObjectMapper mapper, final Person person) {
 
         super(SETTER);
-        this.mapper = mapper;
-
         this.restClient = restClient;
+        this.mapper = mapper;
         this.person = person;
     }
 
@@ -55,7 +51,7 @@ public class PersonCreateCommand extends HystrixCommand<Person> {
 
         HttpRequest request =
             HttpRequest.newBuilder().verb(Verb.POST).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .uri(URI).entity(person).build();
+                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON).uri(URI).entity(person).build();
 
         try (HttpResponse response = restClient.executeWithLoadBalancer(request)) {
             return mapper.readValue(response.getInputStream(), Person.class);

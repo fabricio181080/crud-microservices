@@ -1,6 +1,3 @@
-/*
- * Copyright 2016, Charter Communications, All rights reserved.
- */
 package com.matera.crudmicroservices.core.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +8,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 /**
- *
  *
  * @author wbatista
  */

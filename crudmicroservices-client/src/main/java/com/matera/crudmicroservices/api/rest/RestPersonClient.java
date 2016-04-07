@@ -43,7 +43,7 @@ public class RestPersonClient implements PersonClient {
     @Override
     public Observable<List<Person>> all(String name, String phoneNumber) {
 
-        return new FindAllPersonsCommand(mapper, restClient, name, phoneNumber).observe();
+        return new FindAllPersonsCommand(restClient, mapper, name, phoneNumber).observe();
     }
 
     /**
@@ -53,7 +53,7 @@ public class RestPersonClient implements PersonClient {
     public Observable<Person> byId(Long id) {
 
         checkNotNull(id, "The given id musn't be null");
-        return new FindPersonByIdCommand(mapper, restClient, id).observe();
+        return new FindPersonByIdCommand(restClient, mapper, id).observe();
     }
 
     /**
@@ -63,7 +63,7 @@ public class RestPersonClient implements PersonClient {
     public Observable<Person> createPerson(Person person) {
 
         checkNotNull(person, "Person musn't be null");
-        return new PersonCreateCommand(mapper, restClient, person).observe();
+        return new PersonCreateCommand(restClient, mapper, person).observe();
     }
 
     /**
@@ -71,8 +71,10 @@ public class RestPersonClient implements PersonClient {
      */
     @Override
     public Observable<Person> updatePerson(Long id, Person person) {
-
-        return new PersonUpdateCommand(mapper, restClient, id, person).observe();
+        
+        checkNotNull(id, "Person id must not be null");
+        checkNotNull(person, "Person musn't be null");
+        return new PersonUpdateCommand(restClient, mapper, id, person).observe();
     }
 
     /**

@@ -6,11 +6,11 @@ import com.matera.crudmicroservices.core.domain.Person;
  * Converter for {@link Person}, specially between domain and entity objects.
  * 
  * @author geiser
- *
  */
 public class PersonConverter {
-    
-    public PersonConverter() {
+
+    private PersonConverter() {
+
         // Avoid instantiation
     }
 
@@ -51,5 +51,4 @@ public class PersonConverter {
         entity.setId(domain.getId());
         return entity;
     }
-
 }

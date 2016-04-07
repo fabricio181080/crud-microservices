@@ -1,5 +1,11 @@
 package com.matera.crudmicroservices.rest;
 
+import com.google.inject.Inject;
+import com.matera.crudmicroservices.core.entities.Person;
+import com.matera.crudmicroservices.filter.PersonFilter;
+import com.matera.crudmicroservices.service.PersonService;
+import com.sun.jersey.api.core.InjectParam;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -14,12 +20,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import com.google.inject.Inject;
-import com.matera.crudmicroservices.core.entities.Person;
-import com.matera.crudmicroservices.filter.PersonFilter;
-import com.matera.crudmicroservices.service.PersonService;
-import com.sun.jersey.api.core.InjectParam;
 
 /**
  * Handle the endpoints for Person
@@ -49,7 +49,7 @@ public class PersonRS {
      * @param filter
      */
     @GET
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getPersons(@InjectParam PersonFilter filter) {
 
         List<Person> peopleList = service.getPersons(filter).toBlocking().single();
@@ -64,7 +64,7 @@ public class PersonRS {
      */
     @GET
     @Path("/{id}")
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getPerson(@PathParam("id") Long id) {
 
         try {
@@ -76,8 +76,8 @@ public class PersonRS {
     }
 
     @POST
-    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createPerson(Person person) {
 
         return Response.status(Status.CREATED).entity(service.createPerson(person).toBlocking().single()).build();
@@ -92,25 +92,25 @@ public class PersonRS {
      */
     @PUT
     @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updatePerson(@PathParam("id") Long id, Person person) {
 
         Person newPerson = service.updatePerson(id, person).toBlocking().single();
         return Response.ok(newPerson).build();
     }
-    
+
     /**
      * Remove a {@link Person}
      * 
      * @param id
-     * @param person
      * @return Response
      */
     @DELETE
     @Path("/{id}")
-    @Produces({ MediaType.APPLICATION_JSON })
-    public Response removePerson(@PathParam("id") Long id, Person person) {
+    public Response removePerson(@PathParam("id") Long id) {
 
-        service.removePerson(id, person).toBlocking().single();
+        service.removePerson(id).toBlocking().single();
         return Response.status(Status.NO_CONTENT).build();
     }
 }

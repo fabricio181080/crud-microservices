@@ -34,10 +34,8 @@ public class RestPersonClientTest {
 
     @Mock
     private RestClient restClient;
-
     private ObjectMapper mapper;
-
-    RestPersonClient client;
+    private RestPersonClient client;
 
     @Before
     public void setUp() {
@@ -84,8 +82,8 @@ public class RestPersonClientTest {
     @Test
     public void testDelete() throws Exception {
 
-        Mockito.when(restClient.executeWithLoadBalancer(Mockito.any(HttpRequest.class)))
-            .thenReturn(HttpResponseUtils.createResponse(HttpStatus.SC_NO_CONTENT, null));
+        Mockito.when(restClient.executeWithLoadBalancer(Mockito.any(HttpRequest.class))).thenReturn(
+            HttpResponseUtils.createResponse(HttpStatus.SC_NO_CONTENT, null));
 
         client.removePerson(1l).toBlocking().single();
 
@@ -99,8 +97,8 @@ public class RestPersonClientTest {
     @Test(expected = HystrixRuntimeException.class)
     public void testWithErrorResponse() throws Exception {
 
-        Mockito.when(restClient.executeWithLoadBalancer(Mockito.any(HttpRequest.class)))
-            .thenReturn(HttpResponseUtils.createResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, null, false));
+        Mockito.when(restClient.executeWithLoadBalancer(Mockito.any(HttpRequest.class))).thenReturn(
+            HttpResponseUtils.createResponse(HttpStatus.SC_INTERNAL_SERVER_ERROR, null, false));
 
         client.removePerson(1l).toBlocking().single();
     }
@@ -131,5 +129,4 @@ public class RestPersonClientTest {
         person.setPhoneNumber("12345");
         return person;
     }
-
 }

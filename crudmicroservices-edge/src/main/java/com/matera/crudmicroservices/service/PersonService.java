@@ -70,15 +70,14 @@ public class PersonService {
 
         return personClient.updatePerson(id, person);
     }
-    
+
     /**
      * Remove a {@link Person}
      * 
      * @param id
-     * @param person
-     * @return
+     * @return Observable&lt;Void&gt;
      */
-    public Observable<Void> removePerson(Long id, Person person) {
+    public Observable<Void> removePerson(Long id) {
 
         return personClient.removePerson(id);
     }
