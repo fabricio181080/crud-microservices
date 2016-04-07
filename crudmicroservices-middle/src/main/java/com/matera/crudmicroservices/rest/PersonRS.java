@@ -1,5 +1,11 @@
 package com.matera.crudmicroservices.rest;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
+import com.google.inject.Inject;
+import com.matera.crudmicroservices.core.entities.Person;
+import com.matera.crudmicroservices.service.PersonService;
+
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -15,10 +21,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import com.google.inject.Inject;
-import com.matera.crudmicroservices.core.entities.Person;
-import com.matera.crudmicroservices.service.PersonService;
-
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -29,12 +31,13 @@ public class PersonRS {
 
     @Inject
     public PersonRS(PersonService service) {
+
         this.service = service;
     }
 
-    @Path("/{id}")
     @GET
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response findById(@PathParam("id") long id) {
 
         final Person person = service.findById(id).toBlocking().singleOrDefault(null);
@@ -44,13 +47,13 @@ public class PersonRS {
         return Response.ok(person).build();
     }
 
-    @Path("/all")
     @GET
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response all(@QueryParam("name") String name, @QueryParam("phoneNumber") String phoneNumber) {
 
-        final Observable<Person> observable;
-        if (name != null) {
+        Observable<Person> observable;
+        if (isNotBlank(name)) {
             observable = service.findByName(name);
         } else {
             observable = service.findAll();
@@ -60,6 +63,7 @@ public class PersonRS {
         if (persons.isEmpty()) {
             Response.status(Status.NOT_FOUND).build();
         }
+
         return Response.ok(persons).build();
     }
 
@@ -84,7 +88,6 @@ public class PersonRS {
 
     @DELETE
     @Path("{id}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response delete(@PathParam("id") Long id) {
 
         service.delete(id);
@@ -94,11 +97,10 @@ public class PersonRS {
     private Func1<Person, Boolean> phoneNumber(String phoneNumber) {
 
         return (person) -> {
-            if (phoneNumber != null) {
+            if (isNotBlank(phoneNumber)) {
                 return phoneNumber.equals(person.getPhoneNumber());
             }
             return true;
         };
     }
-
 }

@@ -29,5 +29,4 @@ public class PersonFilter {
 
         this.phoneNumber = phoneNumber;
     }
-
 }

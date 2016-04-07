@@ -9,7 +9,7 @@ public class Bootstrap extends ServerBootstrap {
 	@Override
 	protected void configureBinder(Binder binder) {
 		
-		binder.install(new RESTModule());
+		binder.install(new RestModule());
 		binder.install(new CrudMicroservicesJacksonModule());
 		binder.install(new CrudMicroservicesLocalModule());
 	}

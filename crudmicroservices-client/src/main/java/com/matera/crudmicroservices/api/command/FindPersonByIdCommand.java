@@ -13,6 +13,8 @@ import com.netflix.niws.client.http.RestClient;
 
 import java.net.URI;
 
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 /**
@@ -24,24 +26,20 @@ import javax.ws.rs.core.UriBuilder;
 public class FindPersonByIdCommand extends HystrixCommand<Person> {
 
     private static final HystrixCommand.Setter SETTER = Setter.withGroupKey(CrudmicroservicesGroupKeys.MIDDLE)
-        .andCommandKey(HystrixCommandKey.Factory.asKey(FindPersonByIdCommand.class.getName()));
+        .andCommandKey(HystrixCommandKey.Factory.asKey(FindPersonByIdCommand.class.getSimpleName()));
 
-    public static final String DEFAULT_URL = "/crudmicroservicesmiddle/person";
-
+    public static final String DEFAULT_URL = "/crudmicroservicesmiddle/person/{id}";
     public static final String URL = "crudmicroservices.person.findbyid.url";
 
-    private ObjectMapper mapper;
-
     private final RestClient restClient;
+    private final ObjectMapper mapper;
+    private final Long id;
 
-    private Long id;
-
-    public FindPersonByIdCommand(ObjectMapper mapper, final RestClient restClient, Long id) {
+    public FindPersonByIdCommand(final RestClient restClient, final ObjectMapper mapper, final Long id) {
 
         super(SETTER);
-        this.mapper = mapper;
-
         this.restClient = restClient;
+        this.mapper = mapper;
         this.id = id;
     }
 
@@ -52,7 +50,9 @@ public class FindPersonByIdCommand extends HystrixCommand<Person> {
 
         URI URI = UriBuilder.fromPath(findPersonByIdURL).build(id);
 
-        HttpRequest request = HttpRequest.newBuilder().verb(Verb.GET).uri(URI).build();
+        HttpRequest request =
+            HttpRequest.newBuilder().verb(Verb.GET).header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON).uri(URI)
+                .build();
 
         try (HttpResponse response = restClient.executeWithLoadBalancer(request)) {
             return mapper.readValue(response.getInputStream(), Person.class);

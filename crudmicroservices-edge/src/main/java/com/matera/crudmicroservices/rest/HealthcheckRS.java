@@ -8,19 +8,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
- *
  * @author wbatista
  */
 @Path("services/v1/healthcheck")
 public class HealthcheckRS {
-    
+
     private final Logger LOG = LoggerFactory.getLogger(HealthcheckRS.class);
 
     @GET
     public Response getHealthcheck() {
 
         LOG.info("Getting the healthcheck status ...");
-        return Response.ok("HEALTHY").build();
+        return Response.ok().build();
     }
 }

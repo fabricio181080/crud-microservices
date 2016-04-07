@@ -9,7 +9,6 @@ import com.google.inject.Provider;
 
 /**
  *
- *
  * @author wbatista
  */
 public class CrudMicroservicesObjectMapperProvider implements Provider<ObjectMapper> {
