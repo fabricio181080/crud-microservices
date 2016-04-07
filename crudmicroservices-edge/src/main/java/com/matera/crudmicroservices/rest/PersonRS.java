@@ -1,6 +1,7 @@
 package com.matera.crudmicroservices.rest;
 
 import com.google.inject.Inject;
+import com.matera.crudmicroservices.core.entities.GetPersonsResponse;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.matera.crudmicroservices.filter.PersonFilter;
 import com.matera.crudmicroservices.service.PersonService;
@@ -53,7 +54,12 @@ public class PersonRS {
     public Response getPersons(@InjectParam PersonFilter filter) {
 
         List<Person> peopleList = service.getPersons(filter).toBlocking().single();
-        return Response.ok(peopleList).build();
+        
+        GetPersonsResponse response = new GetPersonsResponse();
+        response.setTotalAssets(peopleList.size());
+        response.getAssets().addAll(peopleList);
+        
+        return Response.ok(response).build();
     }
 
     /**

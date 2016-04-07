@@ -18,7 +18,7 @@ public class CrudMicroservicesObjectMapperProvider implements Provider<ObjectMap
 
         final ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JaxbAnnotationModule());
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE);
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
         mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return mapper;
