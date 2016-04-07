@@ -1,6 +1,7 @@
 package com.matera.crudmicroservices.rest;
 
 import com.google.common.collect.Lists;
+import com.matera.crudmicroservices.core.entities.GetPersonsResponse;
 import com.matera.crudmicroservices.core.entities.Person;
 import com.matera.crudmicroservices.filter.PersonFilter;
 import com.matera.crudmicroservices.service.PersonService;
@@ -39,18 +40,18 @@ public class PersonRSTest {
 	@Test
 	public void testGetPersonsList() {
 		Person fakePerson = new Person();
-		PersonFilter filter = new PersonFilter();
+		PersonFilter filter = new PersonFilter();		
 		Observable<List<Person>> observable = Observable.just(Lists.newArrayList(fakePerson));
 		
 		Mockito.when(service.getPersons(filter)).thenReturn(observable);
 		
 		Response response = personRS.getPersons(filter);
-		Assert.assertNotNull(response.getEntity());
 		
-		@SuppressWarnings("unchecked")
-		List<Person> persons = (List<Person>) response.getEntity();
-		Assert.assertEquals(1, persons.size());
-		Assert.assertEquals(fakePerson, persons.get(0));
+		Assert.assertNotNull(response.getEntity());
+		GetPersonsResponse getPersonsResponse = (GetPersonsResponse) response.getEntity();
+		
+		Assert.assertEquals(1, getPersonsResponse.getTotalAssets().intValue());
+		Assert.assertEquals(fakePerson, getPersonsResponse.getAssets().get(0));
 		
 		Mockito.verify(service, Mockito.only()).getPersons(filter);
 	}
