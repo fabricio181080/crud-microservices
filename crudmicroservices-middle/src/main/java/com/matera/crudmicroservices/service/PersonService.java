@@ -27,6 +27,7 @@ public class PersonService {
 
     @Inject
     public PersonService(PersonStore personStore, Cache cache) {
+
         this.personStore = personStore;
         this.cache = cache;
     }
@@ -63,9 +64,12 @@ public class PersonService {
 
         checkArgument(StringUtils.isNotBlank(name), "name mustn't be null or empty");
 
-        return cache.get(byName(name)).cast(Person.class)
-            .switchIfEmpty(personStore.findByName(name).map(PersonConverter::toEntity).toList()
-                .doOnNext(cache(byName(name))).flatMap((persons) -> Observable.from(persons)));
+        return cache
+            .get(byName(name))
+            .cast(Person.class)
+            .switchIfEmpty(
+                personStore.findByName(name).map(PersonConverter::toEntity).toList().doOnNext(cache(byName(name)))
+                    .flatMap((persons) -> Observable.from(persons)));
 
     }
 
@@ -77,12 +81,11 @@ public class PersonService {
      */
     public Observable<Person> insert(Person person) {
 
-        //checkArgument(person.getId() != null, "id must not be empty");
         checkArgument(!Strings.isNullOrEmpty(person.getName()), "name must not be empty");
+        person.setId(personStore.getMaxId() + 1);
         checkArgument(personStore.findById(person.getId()).isEmpty().toBlocking().single(), "id must be unique");
-
+        
         personStore.save(PersonConverter.toDomain(person));
-
         return this.findById(person.getId());
     }
 
@@ -98,7 +101,7 @@ public class PersonService {
             String.format("person not found for %d", id));
         checkArgument(person.getId() != null, "id must not be empty");
         checkArgument(!Strings.isNullOrEmpty(person.getName()), "name must not be empty");
-        
+
         person.setId(id);
         personStore.update(PersonConverter.toDomain(person));
 
