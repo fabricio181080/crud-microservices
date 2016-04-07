@@ -50,12 +50,12 @@
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
 			<artifactId>jersey-bundle</artifactId>
-			<version>1.19</version>
+			<version>1.19.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-guice</artifactId>
-			<version>1.19</version>
+			<version>1.19.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.datastax.cassandra</groupId>
@@ -120,8 +120,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- <dependency> <groupId>com.netflix.archaius</groupId> <artifactId>archaius-core</artifactId> 
-			<version>0.6.5</version> </dependency> -->
 		<dependency>
 			<groupId>com.netflix.ribbon</groupId>
 			<artifactId>ribbon-eureka</artifactId>
