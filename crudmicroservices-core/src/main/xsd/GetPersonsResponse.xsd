@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified"
+    elementFormDefault="qualified" 
+    targetNamespace="http://crudmicroservices.matera.com/core/entities"
+    xmlns="http://crudmicroservices.matera.com/core/entities"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0">
+    
+    <xs:element name="GetPersonsResponse" type="GetPersonsResponse"/>
+    <xs:complexType name="GetPersonsResponse">
+        <xs:sequence>
+        	<xs:element name="totalAssets" type="xs:int" minOccurs="0" default="0"/>        
+        	<xs:element name="assets" type="Person" minOccurs="0" maxOccurs="unbounded"/>        	
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

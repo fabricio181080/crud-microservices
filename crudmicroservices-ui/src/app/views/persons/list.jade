@@ -1,0 +1,26 @@
+h2 Persons
+
+a.btn.btn-success(ui-sref=".add")
+  i.fa.fa-plus
+  |  Add item
+br
+
+table.table.table-striped(ng-if="vm.items.length")   
+  thead
+    tr
+      th ID
+      th Name
+      th Phone Number
+      th.text-center Options
+  tbody
+    tr(ng-repeat="item in vm.items")
+      td {{item.id}}
+      td {{item.name}}
+      td {{item.phoneNumber}}
+      td.tools
+        a.btn.btn-primary(ui-sref=".edit({id: item.id})")
+          i.fa.fa-pencil
+        a.btn.btn-danger(confirm-remove="vm.remove(item)")
+          i.fa.fa-trash
+  
+.alert.alert-info(ng-hide="vm.items.length") No result found!

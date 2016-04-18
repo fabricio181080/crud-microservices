@@ -1,9 +1,9 @@
-CRUD-Microservices 
+[![Build Status](https://travis-ci.org/materasystems/crud-microservices.svg?branch=master)](https://travis-ci.org/materasystems/crud-microservices)
+
+## CRUD-Microservices
 ==========================================
 
-TravisCI: [![Build Status](https://travis-ci.org/materasystems/crud-microservices.svg?branch=master)](https://travis-ci.org/materasystems/crud-microservices)
-
-Este é um projeto para capacitação, onde aborda um CRUD completo usando a arquitetura de micro serviços. Utiliza as tecnologias:
+This is a example project using Netflix OSS technologies to build Microservices that will run at AWS cloud. The used technologies are:
 
 * Maven
 * Java 8
@@ -23,3 +23,25 @@ Este é um projeto para capacitação, onde aborda um CRUD completo usando a arq
 * Guava
 * JUnit
 * Groovy / Spock
+* AngularJS
+* Bootstrap
+* Less
+* Bower
+* NPM
+
+## Running locally 
+
+#### crudmicroservices-ui
+```
+$ gulp serve
+```
+
+#### crudmicroservices-edge
+```
+$ mvn tomcat7:run {for eureka add: -P eureka-local}
+```
+
+#### crudmicroservices-middle
+```
+$ mvn cassandra:start tomcat7:run {for eureka add: -P eureka-local}
+```

@@ -1,9 +1,14 @@
 language: java
 
-before_install: mvn install -DskipTests=true
+services:
+ - cassandra
 
-script: mvn test
+before_install: |-
+ cqlsh -e "SOURCE 'crudmicroservices-middle/src/cassandra/cql/exec.cql';"
 
+install: mvn -Denvironment=travis install -X
+
+script: mvn test -X
 jdk:
  - oraclejdk8
 
