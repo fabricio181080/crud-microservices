@@ -1,0 +1,107 @@
+#fontSize: 12
+#spacing: 10
+#padding: 10
+
+application {
+  config {
+    baseName gatewayservice,
+    applicationType gateway,
+    packageName br.com.itspay.gatewayservice,
+    authenticationType jwt,
+    prodDatabaseType mongodb,
+  }
+  entities Identificacao, Cartao
+}
+
+application {
+  config {
+    baseName transacaoservice,
+    applicationType microservice,
+    packageName br.com.itspay.transacaoservice,
+    authenticationType jwt,
+    prodDatabaseType mongodb,
+  }
+  entities Transacao, Lancamento
+}
+
+
+application {
+  config {
+    baseName contaservice,
+    applicationType microservice,
+    packageName br.com.itspay.contaservice,
+    authenticationType jwt,
+    prodDatabaseType mongodb,
+  }
+  entities Identificacao, Cartao, Conta
+}
+
+application {
+  config {
+    baseName painelservice,
+    applicationType microservice,
+    packageName br.com.itspay.painelservice,
+    authenticationType jwt,
+    prodDatabaseType mongodb,
+  }
+  entities Cartao, Transacao, Lancamento, Conta 
+}
+
+enum Status {
+  INICIADO,
+  VALIDADO,
+  ATIVO,
+  SUSPENSO,
+  CANCELADO
+}
+
+entity Identificacao {
+	login String required
+    status Status
+}
+
+entity Lancamento {
+	id Long required
+    valor BigDecimal required
+    status Status required
+}
+
+entity Cartao {
+	id String required
+    senha String required
+    status Status required
+}
+
+entity Conta {
+	id String required
+    titular String required
+    status Status required
+}
+
+entity Transacao {
+	id String required
+    valor BigDecimal required
+    tarifa BigDecimal required
+	status Status required
+}
+
+
+relationship OneToMany {
+	Lancamento{cartao required} to Cartao
+    Lancamento{transacao required} to Transacao
+    
+    Cartao{conta required} to Conta
+	Cartao{statusCartao required} to StatusCartao
+    
+    Transacao{origem required} to Conta
+    Transacao{destino required} to Conta
+     
+    Conta{id required} to Identificacao 
+    Conta{tarifa required} to Tarifa 
+   }
+
+search * with elasticsearch
+
+
+
+    
